@@ -1,0 +1,54 @@
+{% extends "_base.html" %}
+{% block content %}
+
+<h1>המזכיר</h1>
+<a href = "/logout"> Logout</a>
+<div class="add-feed-source">
+    <h3>Add a new feed:</h3>
+        <form method = "POST" action="/addfeed/">
+        {{ form.csrf_token }}
+
+        <p>
+            {{ form.url(placeholder = "http://feed_example"") }}
+                {% if form.url.errors %}
+                <span class="error">
+                    {% for error in form.url.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </span>
+                {% endif %}
+        </p>
+
+        <button class="brn brn-sm brn-success" type="submit">הוספת מקור</button>
+        </form>
+
+
+    <div class="entries">
+        <br>
+        <br>
+        <h2>הזנות קיימות:</h2>
+        <div class="datagrid">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="200px"><strong>כתובת ההזנה</strong></th>
+                        <th><strong>Actions</strong></th>
+                    </tr>
+                </thead>
+            {% for feed in feeds %}
+                <tr>
+                    <td width = "200px"> {{feed.name }}</td>
+                    <td width = "75px"> {{task.due_date }}</td>
+                    <td width = "100px"> {{task.posted_date }}</td>
+                    <td width = "50px">  {{task.priority }}</td>
+                    <td width = "90px">  {{ task.poster.name }}</td>
+                    <td>
+                        <a href=" {{ url_for('delete_entry', task_id = task.task_id) }}">Delete</a>
+                        <a href=" {{ url_for('complete', task_id = task.task_id) }}">Mark as Complete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div>
+
+{% endblock %}
