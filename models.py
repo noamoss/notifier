@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from flask.ext.sqlalchemy import SQLAlchemy
 from db import db
 
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(Integer, primary_key=True)
@@ -19,12 +20,13 @@ class User(db.Model):
 class Feed(db.Model):
     __tablename__ = 'feeds'
     id = db.Column(Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    feedxx
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    name = db.Column(String, nullable=False)
     url = db.Column(String, nullable=False)
 
-    def __init(self, user_id, url):
+    def __init(self, user_id, name, url):
         self.user_id = user_id
+        self.name = name
         self.url = url
 
     def __repr__(self):

@@ -2,17 +2,29 @@
 {% block content %}
 
 <h1>המזכיר</h1>
-<a href = "/logout"> Logout</a>
+<a href = "/logout"> התנתקות</a>
 <div class="add-feed-source">
-    <h3>Add a new feed:</h3>
+    <h3>הסיפו כתובת הזנה חדשה:</h3>
         <form method = "POST" action="/addfeed/">
         {{ form.csrf_token }}
 
         <p>
-            {{ form.url(placeholder = "http://feed_example"") }}
+            {{ form.url(placeholder = "כתובת.לדוגמה.com") }}
                 {% if form.url.errors %}
                 <span class="error">
                     {% for error in form.url.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </span>
+                {% endif %}
+        </p>
+
+
+        <p>
+            {{ form.name(placeholder = "שם להזנה החדשה") }}
+                {% if form.name.errors %}
+                <span class="error">
+                    {% for error in form.name.errors %}
                         {{ error }}
                     {% endfor %}
                 </span>
@@ -32,19 +44,16 @@
                 <thead>
                     <tr>
                         <th width="200px"><strong>כתובת ההזנה</strong></th>
-                        <th><strong>Actions</strong></th>
+                        <th width="200px"><strong>שם ההזנה</strong></th>
+                        <th width="100px"><strong>פעולות</strong></th>
                     </tr>
                 </thead>
             {% for feed in feeds %}
                 <tr>
                     <td width = "200px"> {{feed.name }}</td>
-                    <td width = "75px"> {{task.due_date }}</td>
-                    <td width = "100px"> {{task.posted_date }}</td>
-                    <td width = "50px">  {{task.priority }}</td>
-                    <td width = "90px">  {{ task.poster.name }}</td>
+                    <td width = "200px"> <a href="{{ feed.url }}" target="_blank">{{ feed.url }}</a></td>
                     <td>
-                        <a href=" {{ url_for('delete_entry', task_id = task.task_id) }}">Delete</a>
-                        <a href=" {{ url_for('complete', task_id = task.task_id) }}">Mark as Complete</a>
+                        <a href=" {{ url_for('notifier.delete_feed', feed_id = feed.id) }}">מחיקה</a>
                     </td>
                 </tr>
                 {% endfor %}

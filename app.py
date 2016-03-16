@@ -5,6 +5,7 @@ import os
 from models import User, Feed
 from views import notifier
 
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object('_config')
@@ -24,5 +25,7 @@ def create_database(app):
 if __name__ == '__main__':
     app = create_app()
     if not os.path.isfile(DATABASE_PATH):
-      create_db(app)
+      create_database(app)
+    with app.app_context():
+        db.create_all()
     app.run()

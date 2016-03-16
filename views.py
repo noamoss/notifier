@@ -4,7 +4,7 @@ from flask import flash, redirect, render_template, \
 from functools import wraps
 
 from db import db
-from forms import RegisterForm, LoginForm, FeedForm
+from forms import RegisterForm, LoginForm, AddFeedForm
 from sqlalchemy.exc import IntegrityError
 from flask.blueprints import Blueprint
 from models import User, Feed
@@ -37,7 +37,7 @@ def login():
                 session['logged_in'] = True
                 session['user_id'] = user.id
                 flash('ברוכים הבאים, תהנו!')
-                return redirect(url_for('notifier.feed'))
+                return redirect(url_for('notifier.feeds'))
             else:
                 error = 'כתובת דוא"ל או סיסמה שגויים'
         else:
@@ -81,16 +81,41 @@ def flash_errors(form):
                 getattr(form, field).label.text, error), 'error')
 
 
-@notifier.route('/feed')
+@notifier.route('/feeds')
 @login_required
-def feed():
+def feeds():
+    return render_template('feed.html', form=AddFeedForm(request.form),
+                                         feeds = relevant_feeds()
+                           )
+@notifier.route('/addfeed/',methods=['GET','POST'])
+@login_required
+def new_feed():
     error = None
-    form = FeedForm(request.form)
+    form = AddFeedForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
             new_feed = Feed(
-                session['user_id'],
-                form.url.data,
+                user_id = session['user_id'],
+                name = form.name.data,
+                url = form.url.data
             )
+            db.session.add(new_feed)
+            db.session.commit()
+            flash("ההזנה החדשה נוספה למאגר")
+            return redirect(url_for('notifier.feeds'))
 
-    return render_template('feed.html')
+    return render_template('feeds.html',form=form,
+                           feeds = relevant_feeds())
+
+def relevant_feeds():
+    return db.session.query(Feed).filter_by(
+        user_id=session['user_id'])
+
+@notifier.route('/delete_feed/<int:feed_id>/')
+@login_required
+def delete_feed(feed_id):
+    feed_id = feed_id
+    db.session.query(Feed).filter_by(id=feed_id).delete()
+    db.session.commit()
+    flash("מקור זה הוסר מהרשימה שלך")
+    return redirect(url_for("notifier.feeds"))

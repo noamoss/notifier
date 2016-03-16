@@ -19,7 +19,7 @@ class RegisterForm(Form):
         'Repeat Password',
         validators=[DataRequired(),
                     EqualTo('password',
-                            message='Passwords must match')]
+                            message='הסיסמאות אינן תואמות')]
     )
 
 
@@ -33,15 +33,13 @@ class LoginForm(Form):
         validators=[DataRequired()]
     )
 
-class AddFeedSource(Form):
+class AddFeedForm(Form):
     url = StringField(
         'URL',
-        validator=[DataRequired, URL]
-    )
+        #validator=[DataRequired(),URL()]
+        )
 
-
-class FeedForm(Form):
-    feedlink = StringField(
-        'Feed URL',
-        validators=[DataRequired(), URL()]
-    )
+    name= StringField(
+        'Name',
+        #validator=[DataRequired()]
+        )
