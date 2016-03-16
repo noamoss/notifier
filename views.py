@@ -21,7 +21,7 @@ def login_required(test):
             return test(*args, **kwargs)
         else:
             flash('עליך להירשם ולהתחבר לאתר.')
-            return redirect(url_for('login'))
+            return redirect(url_for('notifier.login'))
 
     return wrap
 
