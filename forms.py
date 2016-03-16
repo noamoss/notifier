@@ -36,10 +36,10 @@ class LoginForm(Form):
 class AddFeedForm(Form):
     url = StringField(
         'URL',
-        #validator=[DataRequired(),URL()]
+        validators=[DataRequired(),URL()]
         )
 
     name= StringField(
         'Name',
-        #validator=[DataRequired()]
+        validators=[DataRequired()]
         )

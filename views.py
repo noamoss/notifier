@@ -104,7 +104,7 @@ def new_feed():
             flash("ההזנה החדשה נוספה למאגר")
             return redirect(url_for('notifier.feeds'))
 
-    return render_template('feeds.html',form=form,
+    return render_template('feed.html',form=form,
                            feeds = relevant_feeds())
 
 def relevant_feeds():
