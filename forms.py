@@ -38,12 +38,12 @@ class LoginForm(Form):
 class AddFeedForm(Form):
     url = StringField(
         'URL',
-        validators=[DataRequired(),URL()]
+        validators=[DataRequired(message="יש להזין כתובת למקור המידע"),URL(message="כתובת המקור אינה תקינה")]
         )
 
     name= StringField(
         'Name',
-        validators=[DataRequired()]
+        validators=[DataRequired(message="יש להזין כותרת למקור המידע")]
         )
     def validate(self):
         rv = Form.validate(self)
