@@ -1,10 +1,12 @@
 # projects/forms.py
-
+import json, feedparser
+import urllib.request
+from urllib.parse import urlparse
 from flask_wtf import Form
+from urllib.error import URLError
 from wtforms import StringField, DateField, IntegerField, \
     SelectField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, URL
-
 
 class RegisterForm(Form):
     email = StringField(
@@ -43,3 +45,28 @@ class AddFeedForm(Form):
         'Name',
         validators=[DataRequired()]
         )
+    def validate(self):
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        url = urlparse(self.url.data).geturl()
+        try:
+            myjson = urllib.request.urlopen(url).read().decode('utf-8')
+        except URLError:
+            self.url.errors.append("כתובת לא קיימת")
+            return False
+        try:
+            json_object = json.loads(myjson)
+            return True
+        except ValueError:
+            pass
+        try:
+            myaotm = feedparser.parse(url)
+            if myaotm.status != "200":
+                self.url.errors.append('המקור שהוזן אינו בפורמט JSON או ATOM')
+                return False
+        except ValueError:
+            self.url.errors.append('המקור שהוזן אינו בפורמט JSON או ATOM')
+            return False
+        return True
