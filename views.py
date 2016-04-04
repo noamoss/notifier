@@ -8,6 +8,8 @@ from forms import RegisterForm, LoginForm, AddFeedForm
 from sqlalchemy.exc import IntegrityError
 from flask.blueprints import Blueprint
 from models import User, Feed
+import feedparser, operator
+
 
 notifier = Blueprint('notifier', __name__,
                      template_folder='templates',
@@ -85,7 +87,8 @@ def flash_errors(form):
 @login_required
 def feeds():
     return render_template('feed.html', form=AddFeedForm(request.form),
-                                         feeds = relevant_feeds()
+                                         feeds = relevant_feeds(),
+                                        parsed_feeds = parse_feeds(relevant_feeds())
                            )
 @notifier.route('/addfeed/',methods=['GET','POST'])
 @login_required
@@ -119,3 +122,14 @@ def delete_feed(feed_id):
     db.session.commit()
     flash("מקור זה הוסר מהרשימה שלך")
     return redirect(url_for("notifier.feeds"))
+
+
+def parse_feeds(feeds):
+# parse and mix opentaba feeds
+    results=[]
+
+    for feed in feeds:
+        feed_data = feedparser.parse(feed.url)
+        for entry in feed_data.entries:
+            results.append([feed.name,entry.summary,entry.link,entry.updated])
+    return sorted(results, key=operator.itemgetter(3),reverse=True)

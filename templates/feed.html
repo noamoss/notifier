@@ -3,61 +3,76 @@
 
 <h1>המזכיר</h1>
 <a href = "/logout"> התנתקות</a>
-<div class="add-feed-source">
-    <h3>הסיפו כתובת הזנה חדשה:</h3>
-        <form method = "POST" action="/addfeed/">
-        {{ form.csrf_token }}
+<div class="row">
+    <div class="add-feed-source col-md-8">
+        <h3>הסיפו כתובת הזנה חדשה:</h3>
+            <form method = "POST" action="/addfeed/">
+            {{ form.csrf_token }}
 
-        <p>
-            {{ form.url(placeholder = "כתובת.לדוגמה.com") }}
-                {% if form.url.errors %}
-                <span class="error">
-                    {% for error in form.url.errors %}
-                        {{ error }}
-                    {% endfor %}
-                </span>
-                {% endif %}
-        </p>
-
-
-        <p>
-            {{ form.name(placeholder = "שם להזנה החדשה") }}
-                {% if form.name.errors %}
-                <span class="error">
-                    {% for error in form.name.errors %}
-                        {{ error }}
-                    {% endfor %}
-                </span>
-                {% endif %}
-        </p>
-
-        <button class="brn brn-sm brn-success" type="submit">הוספת מקור</button>
-        </form>
+            <p>
+                {{ form.url(placeholder = "כתובת.לדוגמה.com") }}
+                    {% if form.url.errors %}
+                    <span class="error">
+                        {% for error in form.url.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+             </p>
 
 
-    <div class="entries">
-        <br>
-        <br>
-        <h2>הזנות קיימות:</h2>
-        <div class="datagrid">
-            <table>
-                <thead>
+            <p>
+                {{ form.name(placeholder = "שם להזנה החדשה") }}
+                    {% if form.name.errors %}
+                    <span class="error">
+                        {% for error in form.name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+            </p>
+
+            <button class="brn brn-sm brn-success" type="submit">הוספת מקור</button>
+            </form>
+        </div>
+
+        <div class="entries col-md-4">
+            <br>
+            <br>
+            <h2>הזנות קיימות:</h2>
+            <div class="datagrid">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="200px"><strong>שם ההזנה</strong></th>
+                             <th width="200px"><strong>כתובת ההזנה</strong></th>
+                            <th width="100px"><strong>פעולות</strong></th>
+                        </tr>
+                    </thead>
+                {% for feed in feeds %}
                     <tr>
-                        <th width="200px"><strong>שם ההזנה</strong></th>
-                        <th width="200px"><strong>כתובת ההזנה</strong></th>
-                        <th width="100px"><strong>פעולות</strong></th>
+                        <td width = "200px"> {{feed.name }}</td>
+                        <td width = "200px"> <a href="{{ feed.url }}" target="_blank">{{ feed.url }}</a></td>
+                        <td>
+                         <a href=" {{ url_for('notifier.delete_feed', feed_id = feed.id) }}">מחיקה</a>
+                        </td>
                     </tr>
-                </thead>
-            {% for feed in feeds %}
-                <tr>
-                    <td width = "200px"> {{feed.name }}</td>
-                    <td width = "200px"> <a href="{{ feed.url }}" target="_blank">{{ feed.url }}</a></td>
-                    <td>
-                        <a href=" {{ url_for('notifier.delete_feed', feed_id = feed.id) }}">מחיקה</a>
-                    </td>
-                </tr>
                 {% endfor %}
-            </table>
+                </table>
+            </div>
     </div>
-
+    <div>
+        <h2>בשידור ישיר</h2>
+        <p>
+            {% for entry in parsed_feeds %}
+                    <p>
+                        <b>{{ entry[0] }}:</b>
+                        {{ entry[1] }}<br>
+                        <a href="{{ entry[2] }}" target=_blank> {{ entry[2] }} </a> <br>
+                        {{ entry[3] }}
+                    </p>
+            {% endfor %}
+        </p>
+    </div>
+</div>
 {% endblock %}

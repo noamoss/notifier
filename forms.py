@@ -62,7 +62,7 @@ class AddFeedForm(Form):
         except ValueError:
             pass
         try:
-            myatom = feedparser.parse(url)
+            myatom = feedparser .parse(url)
             if myatom.status != 200:
                 self.url.errors.append('המקור שהוזן אינו בפורמט ATOM')
                 return False

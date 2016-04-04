@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, create_engine, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, create_engine, ForeignKey
 from sqlalchemy.orm import relationship
 from flask.ext.sqlalchemy import SQLAlchemy
 from db import db
@@ -9,10 +9,12 @@ class User(db.Model):
     id = db.Column(Integer, primary_key=True)
     email = db.Column(String(120), unique=True, nullable=False)
     password = db.Column(String, nullable=False)
+    last_update = db.Column(Date)
 
-    def __init__(self, email=None, password=None):
+    def __init__(self, email=None, password=None, last_update=None):
         self.email = email
         self.password = password
+        self.last_update = last_update
 
     def __repr__(self):
         return '<email %s>' % (self.email)
