@@ -39,7 +39,7 @@ def login():
                 session['logged_in'] = True
                 session['user_id'] = user.id
                 flash('ברוכים הבאים, תהנו!')
-                return redirect(url_for('notifier.feeds'))
+                return redirect(url_for('notifier.feeds_editor'))
             else:
                 error = 'כתובת דוא"ל או סיסמה שגויים'
         else:
@@ -83,12 +83,12 @@ def flash_errors(form):
                 getattr(form, field).label.text, error), 'error')
 
 
-@notifier.route('/feeds')
+@notifier.route('/feeds_editor')
 @login_required
-def feeds():
-    return render_template('feed.html', form=AddFeedForm(request.form),
-                                         feeds = relevant_feeds(),
-                                        parsed_feeds = parse_feeds(relevant_feeds())
+def feeds_editor():
+    return render_template('feeds_editor.html', form=AddFeedForm(request.form),
+                                                 feeds = relevant_feeds(),
+                                                parsed_feeds = parse_feeds(relevant_feeds())
                            )
 @notifier.route('/addfeed/',methods=['GET','POST'])
 @login_required
