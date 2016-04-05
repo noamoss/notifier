@@ -87,12 +87,24 @@ def flash_errors(form):
 @login_required
 def feeds_editor():
     return render_template('feeds_editor.html', form=AddFeedForm(request.form),
-                                                 feeds = relevant_feeds(),
+                                                feeds = relevant_feeds(),
                                                 parsed_feeds = parse_feeds(relevant_feeds())
                            )
-@notifier.route('/addfeed/',methods=['GET','POST'])
+
+@notifier.route('/addfeed/<path:feed_url>',methods=['GET','POST'])
 @login_required
-def new_feed():
+def new_feed(feed_url):
+    feed_title = feedparser.parse(feed_url).feed.title
+    return render_template('feeds_editor.html',feed_url=feed_url,
+                                                feed_title=feed_title,
+                                                form=AddFeedForm(request.form),
+                                                feeds=relevant_feeds(),
+                                                parsed_feeds=parse_feeds(relevant_feeds())
+                                )
+
+@notifier.route('/addfeed/', methods=['GET', 'POST'])
+@login_required
+def no_new_feed():
     error = None
     form = AddFeedForm(request.form)
     if request.method == 'POST':
@@ -105,10 +117,8 @@ def new_feed():
             db.session.add(new_feed)
             db.session.commit()
             flash("ההזנה החדשה נוספה למאגר")
-            return redirect(url_for('notifier.feeds'))
+            return redirect(url_for('notifier.feeds_editor'))
 
-    return render_template('feed.html',form=form,
-                           feeds = relevant_feeds())
 
 def relevant_feeds():
     return db.session.query(Feed).filter_by(
@@ -121,7 +131,7 @@ def delete_feed(feed_id):
     db.session.query(Feed).filter_by(id=feed_id).delete()
     db.session.commit()
     flash("מקור זה הוסר מהרשימה שלך")
-    return redirect(url_for("notifier.feeds"))
+    return redirect(url_for("notifier.feeds_editor"))
 
 
 def parse_feeds(feeds):

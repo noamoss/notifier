@@ -1,0 +1,31 @@
+    <div>
+        <h3>הוסיפו כתובת הזנה חדשה:</h3>
+            <form method = "POST" action="/addfeed/">
+            {{ form.csrf_token }}
+
+            <p>
+                {{ form.url(placeholder = "כתובת.לדוגמה.com", value=feed_url) }}
+                    {% if form.url.errors %}
+                    <span class="error">
+                        {% for error in form.url.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+             </p>
+
+
+            <p>
+                {{ form.name(placeholder = "שם להזנה החדשה", value=feed_title) }}
+                    {% if form.name.errors %}
+                    <span class="error">
+                        {% for error in form.name.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+            </p>
+
+            <button class="brn brn-sm brn-success" type="submit">הוספת מקור</button>
+            </form>
+        </div>

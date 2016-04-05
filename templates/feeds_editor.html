@@ -4,37 +4,8 @@
 <h1>המזכיר</h1>
 <a href = "/logout"> התנתקות</a>
 <div class="row">
-    <div class="add-feed-source col-md-8">
-        <h3>הסיפו כתובת הזנה חדשה:</h3>
-            <form method = "POST" action="/addfeed/">
-            {{ form.csrf_token }}
 
-            <p>
-                {{ form.url(placeholder = "כתובת.לדוגמה.com") }}
-                    {% if form.url.errors %}
-                    <span class="error">
-                        {% for error in form.url.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </span>
-                    {% endif %}
-             </p>
-
-
-            <p>
-                {{ form.name(placeholder = "שם להזנה החדשה") }}
-                    {% if form.name.errors %}
-                    <span class="error">
-                        {% for error in form.name.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </span>
-                    {% endif %}
-            </p>
-
-            <button class="brn brn-sm brn-success" type="submit">הוספת מקור</button>
-            </form>
-        </div>
+    {% include "add_new_feed.html" %}
 
         <div class="entries col-md-4">
             <br>
