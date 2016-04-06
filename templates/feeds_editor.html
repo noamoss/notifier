@@ -1,42 +1,14 @@
 {% extends "_base.html" %}
 {% block content %}
 
-<h1>המזכיר</h1>
-<a href = "/logout"> התנתקות</a>
-<div class="row">
-
+{{ user_email }}      |   <a href = "/logout"> התנתקות</a>
+    <div class="row">
+    <h1> המזכיר </h1>
     {% include "add_new_feed.html" %}
-
-        <div class="entries col-md-4">
-            <br>
-            <br>
-            <h2>הזנות קיימות:</h2>
-            <div class="datagrid">
-                <table>
-                    <thead>
-                        <tr>
-                            <th width="200px"><strong>שם ההזנה</strong></th>
-                             <th width="200px"><strong>כתובת ההזנה</strong></th>
-                            <th width="100px"><strong>פעולות</strong></th>
-                        </tr>
-                    </thead>
-                {% for feed in feeds %}
-                    <tr>
-                        <td width = "200px"> {{feed.name }}</td>
-                        <td width = "200px"> <a href="{{ feed.url }}" target="_blank">{{ feed.url }}</a></td>
-                        <td>
-                         <a href=" {{ url_for('notifier.delete_feed', feed_id = feed.id) }}">מחיקה</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </table>
-            </div>
+    {% include "registered_feeds.html" %}
     </div>
     <div>
-        <h2>בשידור ישיר</h2>
-        <p>
             {% include "feed.html" %}
-        </p>
     </div>
 </div>
 {% endblock %}

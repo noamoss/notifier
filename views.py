@@ -38,6 +38,8 @@ def login():
             if user is not None and user.password == request.form['password']:
                 session['logged_in'] = True
                 session['user_id'] = user.id
+                session['user_email'] =  user.email
+                print(session)
                 flash('ברוכים הבאים, תהנו!')
                 return redirect(url_for('notifier.feeds_editor'))
             else:
@@ -86,7 +88,9 @@ def flash_errors(form):
 @notifier.route('/feeds_editor')
 @login_required
 def feeds_editor():
-    return render_template('feeds_editor.html', form=AddFeedForm(request.form),
+    user_email = session['user_email']
+    return render_template('feeds_editor.html', user_email = user_email,
+                                                form=AddFeedForm(request.form),
                                                 feeds = relevant_feeds(),
                                                 parsed_feeds = parse_feeds(relevant_feeds())
                            )

@@ -4,6 +4,7 @@
             {{ form.csrf_token }}
 
             <p>
+                {{ form.url.label }}:
                 {{ form.url(placeholder = "כתובת.לדוגמה.com", value=feed_url) }}
                     {% if form.url.errors %}
                     <span class="error">
@@ -16,6 +17,7 @@
 
 
             <p>
+                {{ form.name.label }}:
                 {{ form.name(placeholder = "שם להזנה החדשה", value=feed_title) }}
                     {% if form.name.errors %}
                     <span class="error">
