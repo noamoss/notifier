@@ -39,7 +39,6 @@ def login():
                 session['logged_in'] = True
                 session['user_id'] = user.id
                 session['user_email'] =  user.email
-                print(session)
                 flash('ברוכים הבאים, תהנו!')
                 return redirect(url_for('notifier.feeds_editor'))
             else:
@@ -98,13 +97,30 @@ def feeds_editor():
 @notifier.route('/addfeed/<path:feed_url>',methods=['GET','POST'])
 @login_required
 def new_feed(feed_url):
+    error = None
+    form = AddFeedForm(request.form)
+    feed_url = feed_url
     feed_title = feedparser.parse(feed_url).feed.title
-    return render_template('feeds_editor.html',feed_url=feed_url,
-                                                feed_title=feed_title,
-                                                form=AddFeedForm(request.form),
+
+    if form.validate_on_submit():
+        new_feed = Feed(
+            user_id=session['user_id'],
+            name=form.name.data,
+            url=form.url.data
+        )
+        db.session.add(new_feed)
+        db.session.commit()
+        flash("ההזנה החדשה נוספה למאגר")
+        return redirect(url_for('notifier.feeds_editor'))
+
+    user_email = session['user_email']
+    return render_template('feeds_editor.html', feed_title=feed_title,
+                                                feed_url=feed_url,
+                                                form=form,
                                                 feeds=relevant_feeds(),
-                                                parsed_feeds=parse_feeds(relevant_feeds())
-                                )
+                                                parsed_feeds=parse_feeds(relevant_feeds()),
+                                                user_email=user_email,
+                            )
 
 @notifier.route('/addfeed/', methods=['GET', 'POST'])
 @login_required
@@ -122,6 +138,13 @@ def no_new_feed():
             db.session.commit()
             flash("ההזנה החדשה נוספה למאגר")
             return redirect(url_for('notifier.feeds_editor'))
+
+    user_email = session['user_email']
+    return render_template('feeds_editor.html', form=form,
+                                                feeds=relevant_feeds(),
+                                                parsed_feeds=parse_feeds(relevant_feeds()),
+                                                user_email=user_email,
+                           )
 
 
 def relevant_feeds():
