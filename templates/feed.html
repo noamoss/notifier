@@ -1,8 +1,11 @@
-    {% for entry in parsed_feeds %}
+    <div>
+        <h3> עדכונים אישיים </h3>
+       {% for entry in parsed_feeds %}
         <p>
-        <b>{{ entry[0] }}:</b>
-            {{ entry[1] }}<br>
-            <a href="{{ entry[2] }}" target=_blank> {{ entry[2] }} </a> <br>
-            {{ entry[3] }}
+            <b>{{ entry[0] }}:</b>
+                {{ entry[1] }}<br>
+                <a href="{{ entry[2] }}" target=_blank> {{ entry[2] }} </a> <br>
+                {{ entry[3] }}
         </p>
     {% endfor %}
+    </div>

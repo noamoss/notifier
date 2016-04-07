@@ -4,11 +4,19 @@
     {{ user_email }}      |   <a href = "/logout"> התנתקות</a>
     <div class="row">
     <h1> המזכיר </h1>
-    {% include "add_new_feed.html" %}
-    {% include "registered_feeds.html" %}
+        <div class="col-md-5">
+            {% include "add_new_feed.html" %}
+        </div>
+        <div class="col-md-5">
+            {% include "registered_feeds.html" %}
+        </div>
     </div>
-    <div>
+    <br><br>
+    <div class="row">
+        <div class="col-md-10">
+            <hr>
             {% include "feed.html" %}
+        </div>
     </div>
 </div>
 {% endblock %}
