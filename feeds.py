@@ -15,5 +15,5 @@ def parse_feeds(feeds):
     for feed in feeds:
         feed_data = feedparser.parse(feed.url)
         for entry in feed_data.entries:
-            results.append([feed.name,entry.summary,entry.link,datetime.fromtimestamp(mktime(entry.updated_parsed))])
+            results.append([feed.name,entry.summary,entry.link,datetime.fromtimestamp(mktime(entry.updated_parsed)).date()])
     return sorted(results, key=operator.itemgetter(3),reverse=True)

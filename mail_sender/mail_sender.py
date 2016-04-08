@@ -36,12 +36,19 @@ def build_mail(user):
 
     feeds = parse_feeds(relevant_feeds(user.id))
     last_update = feeds[0][3]
-    if  user.last_update is not None:
-        feeds = [feed for feed in feeds if feed[3] > user.last_update]
+
+    #if  user.last_update is not None:
+    #    feeds = [feed for feed in feeds if feed[3] > user.last_update]
+    if not feeds:
+        return None
 
     mail.set_html(render_template('email.html', feeds=feeds))
 
-    return last_update, mail
+    # update the update of the last_feed we sent
+    user.last_update = last_update
+    db.session.commit()
+
+    return mail
 
 
 def main():
@@ -53,11 +60,10 @@ def main():
         LOGGER.debug("starting mail_sender")
         client = sendgrid.SendGridClient(SENDGRID_KEY)
         for user in User.query:
-            LOGGER.debug("sending mail to %s" %(user.email, ))
-            last_update, mail = build_mail(user)
-            client.send(mail)
-            user.last_update = last_update
-            db.session.commit()
+            mail = build_mail(user)
+            if mail is not None:
+                LOGGER.debug("sending mail to %s" %(user.email, ))
+                client.send(mail)
 
 
         LOGGER.debug("stopting mail_sender")
