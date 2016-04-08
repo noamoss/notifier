@@ -1,4 +1,18 @@
-bla bla:
-{% for feed in feeds %}
-    {{ feed[0] }} : {{ feed[1] }}
+<div dir="rtl">
+שלום.
+<br><br>
+
+    מצורפים העדכונים שלך מאתרי <a href="http://hasadna.org.il" target="_blank">הסדנא לידע ציבורי:</a>
+<br>
+{% for feed in feeds %}<br>
+    <b>{{ feed[0] }}</b> : {{ feed[1] }}
+    <br>
+    <a href="{{ feed[2] }}" target='_blank' }}>למידע הפתוח</a>
+    <br>
+    <br>
 {% endfor %}
+
+
+רוצים להוסיף או להסיר מקורות לעדכונים? <a href="#" target="_blank"> לחצו כאן</a>
+
+</div>

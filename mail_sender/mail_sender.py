@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
 import logging.handlers
 import traceback
@@ -13,10 +14,10 @@ from _config import SENDGRID_KEY
 
 LOG_FILENAME = 'mail_sender.log'
 NOTIFIER_MAIL_ADDRESS = "notifier@hasadna.org.il"
-MAIL_SUBJECT = "Bla Bla"
+MAIL_SUBJECT = "עדכוני המידע הציבורי הפתוח שביקשת, מהמזכיר"
 
 # Set up a specific logger with our desired output level
-LOGGER = logging.getLogger('maill_sender_log')
+LOGGER = logging.getLogger('mail_sender_log')
 LOGGER.setLevel(logging.DEBUG)
 
 # Add the log message handler to the logger
@@ -35,17 +36,17 @@ def build_mail(user):
     mail.set_subject(MAIL_SUBJECT)
 
     feeds = parse_feeds(relevant_feeds(user.id))
-    last_update = feeds[0][3]
-
-    if  user.last_update is not None:
-        feeds = [feed for feed in feeds if feed[3] > user.last_update]
+#   last_update = feeds[0][3]
+#
+#   if  user.last_update is not None:
+#   feeds = [feed for feed in feeds if feed[3] > user.last_update]
     if not feeds:
         return None
 
     mail.set_html(render_template('email.html', feeds=feeds))
 
     # update the update of the last_feed we sent
-    user.last_update = last_update
+#   user.last_update = last_update
     db.session.commit()
 
     return mail
@@ -66,7 +67,7 @@ def main():
                 client.send(mail)
 
 
-        LOGGER.debug("stopting mail_sender")
+        LOGGER.debug("stoping mail_sender")
 
 
 if '__main__' == __name__:
