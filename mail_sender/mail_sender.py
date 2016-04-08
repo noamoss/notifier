@@ -10,6 +10,7 @@ from feeds import parse_feeds, relevant_feeds
 from _config import SENDGRID_KEY
 
 
+
 LOG_FILENAME = 'mail_sender.log'
 NOTIFIER_MAIL_ADDRESS = "notifier@hasadna.org.il"
 MAIL_SUBJECT = "Bla Bla"
@@ -24,18 +25,6 @@ handler = logging.handlers.RotatingFileHandler(
 
 LOGGER.addHandler(handler)
 
-'''
-
-client = sendgrid.SendGridClient("SENDGRID_APIKEY")
-message = sendgrid.Mail()
-
-message.add_to("test@sendgrid.com")
-message.set_from("you@youremail.com")
-message.set_subject("Sending with SendGrid is Fun")
-message.set_html("and easy to do anywhere, even with Python")
- 
- client.send(message)
- '''
 def format_mail(feeds):
     pass
 
@@ -47,7 +36,7 @@ def build_mail(user):
 
     feeds = parse_feeds(relevant_feeds(user.id))
     last_update = feeds[0][3]
-    if  user.last_upadte is not None:
+    if  user.last_update is not None:
         feeds = [feed for feed in feeds if feed[3] > user.last_update]
 
     mail.set_html(render_template('email.html', feeds=feeds))
