@@ -1,7 +1,5 @@
 # notifier
 
-A feed aggerator for Hasadna's Eknights/projects.
-
 ## Goal
 Open Knowledge and Data should reach us proactivley. 
 The Notifier enables users to sign up for relevant feeds (API based) and get updates when relevant data/info is published.
