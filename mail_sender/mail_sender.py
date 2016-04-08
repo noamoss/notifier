@@ -37,8 +37,8 @@ def build_mail(user):
     feeds = parse_feeds(relevant_feeds(user.id))
     last_update = feeds[0][3]
 
-    #if  user.last_update is not None:
-    #    feeds = [feed for feed in feeds if feed[3] > user.last_update]
+    if  user.last_update is not None:
+        feeds = [feed for feed in feeds if feed[3] > user.last_update]
     if not feeds:
         return None
 
