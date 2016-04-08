@@ -1,4 +1,5 @@
 from _config import basedir
+import os
 
 CRON_FILENAME = "/etc/cron.daily/notifier_mail"
 
