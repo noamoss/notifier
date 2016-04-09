@@ -45,8 +45,8 @@ def build_mail(user):
 #   feeds = [feed for feed in feeds if feed[3] > user.last_feed]
     if not feeds:
         return None
-
-    mail.set_html(render_template('email.html', feeds=feeds))
+    last_update_date = datetime.strftime(user.last_update.date(), '%d/%m/%Y')
+    mail.set_html(render_template('email.html', last_update_date=last_update_date, user=user, feeds=feeds))
 
     # update the update of the last_feed we sent
 #   user.last_feed = last_feed
