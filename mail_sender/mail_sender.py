@@ -20,10 +20,14 @@ MAIL_SUBJECT = "עדכוני המידע הציבורי הפתוח שביקשת, 
 LOGGER = logging.getLogger('mail_sender_log')
 LOGGER.setLevel(logging.DEBUG)
 
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
 # Add the log message handler to the logger
 handler = logging.handlers.RotatingFileHandler(
               LOG_FILENAME, maxBytes=10000, backupCount=5)
 
+handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
 
 def format_mail(feeds):
