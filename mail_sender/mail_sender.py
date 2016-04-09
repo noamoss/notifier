@@ -8,6 +8,7 @@ from flask import Flask, render_template
 from db import db
 from models import User, Feed
 from feeds import parse_feeds, relevant_feeds
+from datetime import datetime
 from _config import SENDGRID_KEY
 
 
@@ -30,8 +31,6 @@ handler = logging.handlers.RotatingFileHandler(
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
 
-def format_mail(feeds):
-    pass
 
 def build_mail(user):
     mail = sendgrid.Mail()
@@ -40,18 +39,17 @@ def build_mail(user):
     mail.set_subject(MAIL_SUBJECT)
 
     feeds = parse_feeds(relevant_feeds(user.id))
-#   last_update = feeds[0][3]
+#   last_feed = feeds[0][3]
 #
-#   if  user.last_update is not None:
-#   feeds = [feed for feed in feeds if feed[3] > user.last_update]
+#   if  user.last_feed is not None:
+#   feeds = [feed for feed in feeds if feed[3] > user.last_feed]
     if not feeds:
         return None
 
     mail.set_html(render_template('email.html', feeds=feeds))
 
     # update the update of the last_feed we sent
-#   user.last_update = last_update
-    db.session.commit()
+#   user.last_feed = last_feed
 
     return mail
 
@@ -69,8 +67,10 @@ def main():
             if mail is not None:
                 LOGGER.debug("sending mail to %s" %(user.email, ))
                 client.send(mail)
+                user.last_update = datetime.today()
 
 
+        db.session.commit()
         LOGGER.debug("stoping mail_sender")
 
 
