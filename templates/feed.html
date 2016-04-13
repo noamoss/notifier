@@ -2,10 +2,10 @@
         <h3> עדכונים אישיים </h3>
        {% for entry in parsed_feeds %}
         <p>
-            <b>{{ entry[0] }}:</b>
-                {{ entry[1] }}<br>
-                <a href="{{ entry[2] }}" target=_blank> {{ entry[2] }} </a> <br>
-                {{ entry[3] }}
+            <b>{{ entry[0] }}:</b><i> {{ entry[1] }}</i>.<br>
+                {{ entry[2] }}<br>
+                <a href="{{ entry[3] }}" target=_blank> למידע הפתוח</a>, שפורסם ב-{{ entry[4] }}.
+                <br>
         </p>
     {% endfor %}
     </div>

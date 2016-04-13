@@ -1,22 +1,133 @@
-<div dir="rtl">
-שלום.
-<br><br>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>ציפור קטנה, עדכוני הסדנא לידע ציבורי</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="margin: 0; padding; 0;" dir="rtl">
+    <table border="1" cellpadding="0" cellspacing="0" width="100%">
+      <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+            <tr>
+                <td   style="padding-top: 40px; padding-right: 0px; padding-bottom: 30px; padding-left: 0px;" bgcolor="ffffff">
+                        <img alt="ציפור קטנה" src="https://upload.wikimedia.org/wikipedia/commons/6/63/Icon_Bird_512x512.png" height="60px"/>
+עדכוני הצפור הקטנה מקן<img src="http://www.hasadna.org.il/wp-content/uploads/2015/11/hasadna-logo-light340.png" alt="הסדנא לידע ציבורי" height="150"/>
+                </td>
+            </tr>
+              <tr>
+                <td   style="padding-top: 20px; padding-right: 20px; padding-bottom: 10px; padding-left: 20px;" bgcolor="ffffff">
+                    <h2>
+ המידע הציבורי שלך </a> מאז ה-{{ last_update_date }}:
+                    </h2>
+                </td>
+            </tr>
 
-    מצורפים העדכונים שלך מאתרי <a href="http://hasadna.org.il" target="_blank">הסדנא לידע ציבורי:</a>
-    המייל הזה כולל את כל העדכונים שאספנו עבורך מאז העדכון הקודם, ב-{{ last_update_date }}.
-
-<br><br>
-    רוצים להוסיף או להסיר מקורות לעדכונים? <a href="#" target="_blank"> לחצו כאן</a>
-<br>
-{% for feed in feeds %}<br>
-    <b>{{ feed[0] }}</b> : {{ feed[1] }}
-    <br>
-    <a href="{{ feed[2] }}" target='_blank' }}>למידע הפתוח</a>
-    <br>
-    <br>
-{% endfor %}
-
-<hr>
+            <tr>
+                <td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        {% for feed in feeds %}
+                        <tr align="right">
+                            <td>
+                                <b>{{ feed[0] }}</b>: {{feed[1] }}.
+                            </td>
+                        </tr>
+                        <tr align="right">
+                            <td>
+                                {{ feed[2] }}
+                            </td>
+                        </tr>
+                        <tr align="right">
+                            <td>
+פורםס ב-{{feed[4]}}. <a href="{{ feed[3] }}" target="_blank">למידע הפתוח</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="#fffffff" align="center">
+                    הירשמו לעדכונים ממקורות מידע ציבורי נוספים:
+                    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                        <tr>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width ="40" valign="top" align="center">
+                                <a href="http://opentaba.info" target="_blank">
+                                    <img src="http://www.hasadna.org.il/wp-content/uploads/2012/01/OpenTABA-199x200-199x200.png" height="80" alt="תבע פתוחה" />
+                                    <br> תב"ע פתוחה
+                                </a>
+                            </td>
+                            <td style="font-size: 0; line-height: 0;" width="20">
+                                &nbsp;
+                            </td>
+                            <td width ="40" valign="top" align="center">
+                                <a href="http://kikar.org" target="_blank">
+                                    <img src="http://kikar.org/static/media/kikar_hamedina_logo.png" height="80" alt="כיכר המדינה" />
+                                </a>
+                            </td>
+                            <td style="font-size: 0; line-height: 0;" width="20">
+                                &nbsp;
+                            </td>
+                            <td width ="40" valign="top" align="center">
+                                עוד חשמביר
+                            </td>
+                            <td style="font-size: 0; line-height: 0;" width="20">
+                                &nbsp;
+                            </td>
+                            <td width ="40" valign="top" align="center">
+                            ועוד חשמביר
+                            </td>
+                        </tr>
+                    </table>
+              </td>
+              </tr>
+              <tr>
+                  <td bgcolor="#fffffff" style="padding: 30px 30px 30px 30px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr align="right">
+                            <td>
 רוצים להוסיף או להסיר מקורות לעדכונים? <a href="#" target="_blank"> לחצו כאן</a>
-
-</div>
+                            </td>
+                            <td>
+                                <table border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td>
+                                            <a href="https://twitter.com/hasadna" target="_blank">
+                                                <img src="https://pixabay.com/static/uploads/photo/2014/04/03/11/53/twitter-312464_960_720.png" alt="twitter" height="38" style="display: block;" border="0" />
+                                            </a>
+                                        </td>
+                                        <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+                                        <td>
+                                            <a href="https://he-il.facebook.com/hasadna.org.il" target="_blank">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Facebook_icon.jpg" alt="facebook" width="38" height="38" style="display: block;" border="0" />
+                                            </a>
+                                        </td>
+                                        <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+                                        <td>
+                                            <a href="https://forum.hasadna.org.il/" target="_blank">
+                                                <img src="https://www.discourse.org/images/icon-tiny.png" alt="twitter" width="38" height="38" style="display: block;" border="0" />
+                                            </a>
+                                        </td>
+                                        <td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                  </td>
+              </tr>
+          </table>
+          </td>
+      </tr>
+    </table>
+</body>
+</html>

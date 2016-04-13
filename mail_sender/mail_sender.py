@@ -15,7 +15,7 @@ from _config import SENDGRID_KEY
 
 LOG_FILENAME = 'mail_sender.log'
 NOTIFIER_MAIL_ADDRESS = "notifier@hasadna.org.il"
-MAIL_SUBJECT = "עדכוני המידע הציבורי הפתוח שביקשת, מהמזכיר"
+MAIL_SUBJECT = "לחשושים חדשים מהציפור הקטנה, עדכוני המידע הציבורי שלך"
 
 # Set up a specific logger with our desired output level
 LOGGER = logging.getLogger('mail_sender_log')
@@ -39,17 +39,17 @@ def build_mail(user):
     mail.set_subject(MAIL_SUBJECT)
 
     feeds = parse_feeds(relevant_feeds(user.id))
-#   last_feed = feeds[0][3]
-#
-#   if  user.last_feed is not None:
-#   feeds = [feed for feed in feeds if feed[3] > user.last_feed]
+    last_feed = feeds[0][4]
+
+    if  user.last_feed is not None:
+        feeds = [feed for feed in feeds if feed[4] > user.last_feed]
     if not feeds:
         return None
     last_update_date = datetime.strftime(user.last_update.date(), '%d/%m/%Y')
     mail.set_html(render_template('email.html', last_update_date=last_update_date, user=user, feeds=feeds))
 
     # update the update of the last_feed we sent
-#   user.last_feed = last_feed
+    user.last_feed = last_feed
 
     return mail
 
