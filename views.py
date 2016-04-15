@@ -100,7 +100,10 @@ def new_feed(feed_url):
     error = None
     form = AddFeedForm(request.form)
     feed_url = feed_url
-    feed_title = feedparser.parse(feed_url).feed.title
+    try:
+        feed_title = feedparser.parse(feed_url).feed.title
+    except:
+        feed_title=""
 
     if form.validate_on_submit():
         new_feed = Feed(

@@ -6,6 +6,13 @@
                 {{ entry[2] }}<br>
                 <a href="{{ entry[3] }}" target=_blank> למידע הפתוח</a>, שפורסם ב-{{ entry[4] }}.
                 <br>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ entry[3] }}:{{entry[2]}},{{entry[1]}}" target="_blank">שתפו בפייסבוק</a>
+                <a href="https://twitter.com/home?status={{ entry[3] }}:{{entry[2]}},{{entry[1]}}" target="_blank">צייצו בטוויטר</a>
+                <a href="https://plus.google.com/share?url={{ entry[3] }}" target="_blank" target="_blank">שתפו בגוגל</a>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ entry[3] }}&title={{entry[1]}}:{{entry[2]}}&summary=&source=" target="_blank">LinkedIn</a>
+                <a href="mailto:?&subject=מידע ציבורי מעניין&body={{ entry[3] }}" target="_blank">שתפו בדוא"ל</a>
+            <br>
+
         </p>
     {% endfor %}
     </div>
