@@ -33,4 +33,4 @@ class Feed(db.Model):
         self.url = url
 
     def __repr__(self):
-        return '<user: %s, url %s>' % (self.user,self.url)
+        return '<user: %s, url %s>' % (self.user, self.url)

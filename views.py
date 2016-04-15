@@ -8,7 +8,7 @@ from forms import RegisterForm, LoginForm, AddFeedForm
 from sqlalchemy.exc import IntegrityError
 from flask.blueprints import Blueprint
 from models import User, Feed
-import feedparser, operator
+import feedparser
 from feeds import parse_feeds
 
 notifier = Blueprint('notifier', __name__,
@@ -38,7 +38,7 @@ def login():
             if user is not None and user.password == request.form['password']:
                 session['logged_in'] = True
                 session['user_id'] = user.id
-                session['user_email'] =  user.email
+                session['user_email'] = user.email
                 flash('ברוכים הבאים, תהנו!')
                 return redirect(url_for('notifier.feeds_editor'))
             else:
@@ -88,13 +88,14 @@ def flash_errors(form):
 @login_required
 def feeds_editor():
     user_email = session['user_email']
-    return render_template('feeds_editor.html', user_email = user_email,
-                                                form=AddFeedForm(request.form),
-                                                feeds = relevant_feeds(),
-                                                parsed_feeds = parse_feeds(relevant_feeds())
+    return render_template('feeds_editor.html', user_email=user_email,
+                           form=AddFeedForm(request.form),
+                           feeds=relevant_feeds(),
+                           parsed_feeds=parse_feeds(relevant_feeds())
                            )
 
-@notifier.route('/addfeed/<path:feed_url>',methods=['GET','POST'])
+
+@notifier.route('/addfeed/<path:feed_url>', methods=['GET', 'POST'])
 @login_required
 def new_feed(feed_url):
     error = None
@@ -103,27 +104,28 @@ def new_feed(feed_url):
     try:
         feed_title = feedparser.parse(feed_url).feed.title
     except:
-        feed_title=""
+        feed_title = ""
 
     if form.validate_on_submit():
-        new_feed = Feed(
+        a_new_feed = Feed(
             user_id=session['user_id'],
             name=form.name.data,
             url=form.url.data
         )
-        db.session.add(new_feed)
+        db.session.add(a_new_feed)
         db.session.commit()
         flash("ההזנה החדשה נוספה למאגר")
         return redirect(url_for('notifier.feeds_editor'))
 
     user_email = session['user_email']
     return render_template('feeds_editor.html', feed_title=feed_title,
-                                                feed_url=feed_url,
-                                                form=form,
-                                                feeds=relevant_feeds(),
-                                                parsed_feeds=parse_feeds(relevant_feeds()),
-                                                user_email=user_email,
-                            )
+                           feed_url=feed_url,
+                           form=form,
+                           feeds=relevant_feeds(),
+                           parsed_feeds=parse_feeds(relevant_feeds()),
+                           user_email=user_email,
+                           )
+
 
 @notifier.route('/addfeed/', methods=['GET', 'POST'])
 @login_required
@@ -132,27 +134,28 @@ def no_new_feed():
     form = AddFeedForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            new_feed = Feed(
-                user_id = session['user_id'],
-                name = form.name.data,
-                url = form.url.data
+            a_new_feed = Feed(
+                user_id=session['user_id'],
+                name=form.name.data,
+                url=form.url.data
             )
-            db.session.add(new_feed)
+            db.session.add(a_new_feed)
             db.session.commit()
             flash("ההזנה החדשה נוספה למאגר")
             return redirect(url_for('notifier.feeds_editor'))
 
     user_email = session['user_email']
     return render_template('feeds_editor.html', form=form,
-                                                feeds=relevant_feeds(),
-                                                parsed_feeds=parse_feeds(relevant_feeds()),
-                                                user_email=user_email,
+                           feeds=relevant_feeds(),
+                           parsed_feeds=parse_feeds(relevant_feeds()),
+                           user_email=user_email,
                            )
 
 
 def relevant_feeds():
     return db.session.query(Feed).filter_by(
         user_id=session['user_id'])
+
 
 @notifier.route('/delete_feed/<int:feed_id>/')
 @login_required
