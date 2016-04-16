@@ -3,14 +3,15 @@
     {{ user_email }}      |   <a href = "/logout"> התנתקות</a>
     <div class="row">
     <h1> ציפור קטנה </h1>
-        <div class="col-md-5">
-            {% include "add_new_feed.html" %}
-        </div><img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Icon_Bird_512x512.png" width="60px" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Icon_Bird_512x512.png" width="60px" />
         <div class="col-md-5">
             {% include "registered_feeds.html" %}
         </div>
+        <div class="col-md-5">
+            {% include "add_new_feed.html" %}
+        </div>
     </div>
-    <br><br>
+<br><br>
     <div class="row">
         <div class="col-md-10">
             <hr>

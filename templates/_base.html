@@ -2,8 +2,9 @@
 <html>
     <head>
         <title> הציפור הקטנה - עדכונים ולחשושים על מידע ציבורי</title>
-        <link rel="stylesheet" href="static/bootstrap.min.css" media="screen">
-            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/yeti/bootstrap.min.css" rel=stylesheet type="text/css">
+        <link href="{{ url_for('static', filename='main.css') }}" rel=stylesheet type=text/css>
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="../../assets/js/html5shiv.js"></script>
       <script src="../../assets/js/respond.min.js"></script>
@@ -14,7 +15,7 @@
 <body dir="rtl">
     <div class="container">
 
-        {% for message in get_flashed_messages() %}
+         {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
         {% if error %}

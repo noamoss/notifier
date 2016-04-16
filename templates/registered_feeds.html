@@ -5,14 +5,13 @@
                     <thead>
                         <tr>
                             <th width="300"><strong>שם ההזנה</strong></th>
-                             <th><strong>כתובת ההזנה</strong></th>
-                            <th><strong>שיתוף</strong></th>
+                            <th><strong>כתובת ההזנה</strong></th>
                             <th>פעולות</th>
                         </tr>
                     </thead>
                 {% for feed in feeds %}
                     <tr>
-                        <td> {{feed.name }}</td>
+                        <td width="300"> {{feed.name }}</td>
                         <td> <a href="{{ feed.url }}" target="_blank">{{ feed.url }}</a></td>
                         <td>
                          <a href=" {{ url_for('notifier.delete_feed', feed_id = feed.id) }}">מחיקה</a>
