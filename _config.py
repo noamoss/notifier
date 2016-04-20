@@ -6,7 +6,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 DATABASE = 'notifier.db'
 
-SENDGRID_KEY = "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"
+SENDGRID_KEY = ""
 
 WTF_CSRF_ENABLED = True
 SECRET_KEY = """cb6ae6d9eb6c75 5998bf698dd83c 029d3d15d81f64 0bda227bc296d9 489cb25a00239c
