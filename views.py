@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # import the Flask class from the flask module
 from flask import flash, redirect, render_template, \
     request, url_for, session
