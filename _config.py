@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # project_config.py
 import os
 

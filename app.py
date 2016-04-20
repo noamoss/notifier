@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from _config import DATABASE_PATH
 from db import db
 from flask import Flask

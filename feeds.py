@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import feedparser
 import operator
 from models import Feed

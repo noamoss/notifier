@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # projects/forms.py
 import json, feedparser
 import urllib.request
