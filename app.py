@@ -23,8 +23,9 @@ def create_database(app):
     user.password = "12345"
     db.session.commit()
 
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
     if not os.path.isfile(DATABASE_PATH):
       create_database(app)
     with app.app_context():
