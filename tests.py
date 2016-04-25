@@ -21,6 +21,8 @@ class UserTests(TestCase):
         app.config['WTF_CSRF_ENABLED'] = False
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = False
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+                    os.path.join(basedir, TEST_DB)
         return app
 
     #executed prior to each test
@@ -32,8 +34,8 @@ class UserTests(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def login(self,email,password, confirm):
-        return self.client.post('/',data=dict(email=email, password=password, confirm=confirm), follow_redirects=True)
+    def login(self,email,password):
+        return self.client.post('/',data=dict(email=email, password=password), follow_redirects=True)
 
     def logout(self):
         return self.client.get('logout/', follow_redirects=True)
@@ -44,6 +46,11 @@ class UserTests(TestCase):
                                         password=password,
                                         confirm=confirm),
                             follow_redirects=True)
+
+
+    def register_exemple(self):
+        self.client.get('register/', follow_redirects=True)
+        return self.register("noam@there.com", "123456", "123456")
 
 
     def test_user_setup(self):
@@ -61,7 +68,7 @@ class UserTests(TestCase):
         self.assertIn(hoped_result, response.data)
 
     def test_users_cannot_login_unless_registered(self):
-        response = self.login('foo', 'bar', 'bar')
+        response = self.login('foo', 'bar')
         hoped_result = ' או סיסמה שגויים'
         self.assertIn(hoped_result, response.data.decode('UTF-8'))
 
@@ -76,6 +83,18 @@ class UserTests(TestCase):
         self.assertEqual(response.status_code, 200)
         hoped_result = " אנא הירשמו כדי כדי להגיע לרשימת מקורות המידע שלכם."
         self.assertIn(hoped_result, response.data.decode('UTF-8'))
+
+    def test_invalid_form_data(self):
+        self.register('noamico@b.com','12345','12345')
+        response = self.login('noamico@b.com','123456')
+        hoped_result = ' או סיסמה שגויים'
+        self.assertIn(hoped_result, response.data.decode('UTF-8'))
+
+    def test_user_registration(self):
+        response = self.register_exemple()
+        hoped_result="תודה שנרשמת. כעת ניתן להתחבר לאתר"
+        self.assertIn(hoped_result,response.data.decode('UTF-8'))
+
 
 if __name__ == '__main__':
     unittest.main()
