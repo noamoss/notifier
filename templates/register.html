@@ -6,7 +6,7 @@
     <form method = "POST" action="/register/">
         {{ form.csrf_token }}
 
-            {{ form.email(placeholder = "כתובת דוא"ל") }}
+            {{ form.email(placeholder = 'כתובת דוא"ל') }}
             {% if form.email.errors %}
                 <span class="error">
                     {% for error in form.email.errors %}
