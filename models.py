@@ -9,8 +9,8 @@ class User(db.Model):
     id = db.Column(Integer, primary_key=True)
     email = db.Column(String(120), unique=True, nullable=False)
     password = db.Column(String, nullable=False)
-    last_update = db.Column(DateTime)
-    last_feed = db.Column(DateTime)
+    last_update = db.Column(DateTime, nullable=True)
+    last_feed = db.Column(DateTime, nullable=True)
 
     def __init__(self, email=None, password=None, last_update=None):
         self.email = email

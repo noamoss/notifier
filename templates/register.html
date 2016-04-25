@@ -3,7 +3,7 @@
 
 <h1> ברוכים הבאים למזכיר</h1>
 <h3> אנא הירשמו כדי כדי להגיע לרשימת מקורות המידע שלכם.</h3>
-    <form method = "POST" action="/register/">
+    <form method = "POST" action="/register">
         {{ form.csrf_token }}
 
             {{ form.email(placeholder = 'כתובת דוא"ל') }}

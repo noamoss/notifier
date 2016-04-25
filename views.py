@@ -57,7 +57,7 @@ def logout():
     return redirect(url_for('notifier.login'))
 
 
-@notifier.route('/register/', methods=['GET', 'POST'])
+@notifier.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
     form = RegisterForm(request.form)
