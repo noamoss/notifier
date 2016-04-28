@@ -39,13 +39,15 @@ class LoginForm(Form):
 class AddFeedForm(Form):
     url = StringField(
         'כתובת URL',
-        validators=[DataRequired(message="יש להזין כתובת למקור המידע"),URL(message="כתובת המקור אינה תקינה")],
+        validators=[DataRequired(message="יש להזין כתובת למקור המידע"),
+                    URL(message="כתובת מקור לא תקינה")],
         )
 
     name= StringField(
         'שם או כותרת',
         validators=[DataRequired(message="יש להזין כותרת למקור המידע")]
         )
+
     def validate(self):
         rv = Form.validate(self)
         if not rv:

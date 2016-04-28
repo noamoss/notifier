@@ -4,6 +4,7 @@ from flask import flash, redirect, render_template, \
     request, url_for, session
 from functools import wraps
 
+from _config import basedir
 from db import db
 from forms import RegisterForm, LoginForm, AddFeedForm
 from sqlalchemy.exc import IntegrityError
@@ -14,8 +15,8 @@ from feeds import parse_feeds
 
 notifier = Blueprint('notifier', __name__,
                      template_folder='templates',
-                     static_folder='static')
-
+                     static_folder='static',
+                     )
 
 def login_required(test):
     @wraps(test)
@@ -23,7 +24,7 @@ def login_required(test):
         if 'logged_in' in session:
             return test(*args, **kwargs)
         else:
-            flash('עליך להירשם ולהתחבר לאתר.')
+            flash(u'עליך להירשם ולהתחבר לאתר.')
             return redirect(url_for('notifier.login'))
 
     return wrap
@@ -40,7 +41,7 @@ def login():
                 session['logged_in'] = True
                 session['user_id'] = user.id
                 session['user_email'] = user.email
-                flash('ברוכים הבאים, תהנו!')
+                flash(u'ברוכים הבאים, תהנו!')
                 return redirect(url_for('notifier.feeds_editor'))
             else:
                 error = 'כתובת דוא"ל או סיסמה שגויים'
@@ -50,10 +51,11 @@ def login():
 
 
 @notifier.route('/logout/')
+@login_required
 def logout():
     session.pop('logged_in', None)
     session.pop('user_id', None)
-    flash('להתראות!')
+    flash(u'להתראות!')
     return redirect(url_for('notifier.login'))
 
 
@@ -70,7 +72,7 @@ def register():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                flash("תודה שנרשמת. כעת ניתן להתחבר לאתר")
+                flash(u'תודה שנרשמת. כעת ניתן להתחבר לאתר')
                 return redirect(url_for('notifier.login'))
             except IntegrityError:
                 error = 'כתובת הדוא"ל הזו כבר קיימת באתר.'
@@ -115,11 +117,12 @@ def new_feed(feed_url):
         )
         db.session.add(a_new_feed)
         db.session.commit()
-        flash("ההזנה החדשה נוספה למאגר")
+        flash(u'ההזנה החדשה נוספה למאגר')
         return redirect(url_for('notifier.feeds_editor'))
 
     user_email = session['user_email']
-    return render_template('feeds_editor.html', feed_title=feed_title,
+    return render_template('feeds_editor.html',
+                           feed_title=feed_title,
                            feed_url=feed_url,
                            form=form,
                            feeds=relevant_feeds(),
@@ -142,15 +145,18 @@ def no_new_feed():
             )
             db.session.add(a_new_feed)
             db.session.commit()
-            flash("ההזנה החדשה נוספה למאגר")
+            flash(u'ההזנה החדשה נוספה למאגר')
             return redirect(url_for('notifier.feeds_editor'))
 
-    user_email = session['user_email']
-    return render_template('feeds_editor.html', form=form,
-                           feeds=relevant_feeds(),
-                           parsed_feeds=parse_feeds(relevant_feeds()),
-                           user_email=user_email,
-                           )
+        user_email = session['user_email']
+        return render_template('feeds_editor.html',
+                          feed_title=form.name.data,
+                          feed_url=form.url.data,
+                          form=form,
+                          feeds=relevant_feeds(),
+                          parsed_feeds=parse_feeds(relevant_feeds()),
+                          user_email=user_email,
+                          )
 
 
 def relevant_feeds():
@@ -164,5 +170,11 @@ def delete_feed(feed_id):
     feed_id = feed_id
     db.session.query(Feed).filter_by(id=feed_id).delete()
     db.session.commit()
-    flash("מקור זה הוסר מהרשימה שלך")
+    flash(u'מקור זה הוסר מהרשימה שלך')
     return redirect(url_for("notifier.feeds_editor"))
+
+
+@notifier.route('/logos/<image>')
+def logos(image):
+    print(basedir+"/templates/images/"+image)
+    return(basedir+"/templates/images/"+image)
