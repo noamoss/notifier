@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from sqlalchemy import Column, Integer, String, DateTime, create_engine, ForeignKey
 from sqlalchemy.orm import relationship
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -26,11 +28,17 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(String, nullable=False)
     url = db.Column(String, nullable=False)
+    project = db.Column(String, nullable=False)
 
-    def __init(self, user_id, name, url):
+    def __init__(self, user_id, name, url, project):
         self.user_id = user_id
         self.name = name
         self.url = url
+        self.project=project
 
     def __repr__(self):
-        return '<user: %s, url %s>' % (self.user, self.url)
+        return '<user: %s, url %s, project %s>' % (self.user, self.url, self.project)
+
+Projects = {
+    "opentaba":'תב"ע פתוחה'
+}
