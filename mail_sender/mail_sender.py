@@ -39,6 +39,9 @@ def build_mail(user):
     mail.set_subject(MAIL_SUBJECT)
 
     feeds = parse_feeds(relevant_feeds(user.id))
+    if not feeds:
+        return None
+
     last_feed = feeds[0][4]
 
     if  user.last_feed is not None:
