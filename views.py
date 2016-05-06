@@ -11,7 +11,7 @@ from sqlalchemy.exc import IntegrityError
 from flask.blueprints import Blueprint
 from models import User, Feed, Projects
 import feedparser
-from feeds import parse_feeds
+from feeds import parse_feeds, get_project_name_by_feed, relevant_feeds
 
 
 notifier = Blueprint('notifier', __name__,
@@ -88,63 +88,31 @@ def flash_errors(form):
                 getattr(form, field).label.text, error), 'error')
 
 
-@notifier.route('/feeds_editor')
+@notifier.route('/feeds_editor', methods=["GET","POST"])
 @login_required
 def feeds_editor():
-    user_email = session['user_email']
-    return render_template('feeds_editor.html', user_email=user_email,
+        user_email = session['user_email']
+        return render_template('feeds_editor.html', user_email=user_email,
                            form=AddFeedForm(request.form),
                            feeds=relevant_feeds(),
                            parsed_feeds=parse_feeds(relevant_feeds())
                            )
 
 
-@notifier.route('/addfeed/opentaba/<city>/<path:feed_url>', methods=['GET', 'POST'])
+@notifier.route('/addfeed', methods=['GET', 'POST'])
 @login_required
-def new_feed(feed_url, city):
-    error = None
-    form = AddFeedForm(request.form)
-
-    try:
-        feed_title = city+ ": "+feedparser.parse(feed_url).feed.title
-    except:
-        feed_title = 'תב"ע פתוחה '+city+ ":"
-
-    if form.validate_on_submit():
-        a_new_feed = Feed(
-            user_id=session['user_id'],
-            name=form.name.data,
-            url=form.url.data,
-            project="opentaba"
-        )
-        db.session.add(a_new_feed)
-        db.session.commit()
-        flash(u'ההזנה החדשה נוספה למאגר')
-        return redirect(url_for('notifier.feeds_editor'))
-
-    user_email = session['user_email']
-    return render_template('feeds_editor.html',
-                           feed_title=feed_title,
-                           feed_url=feed_url,
-                           form=form,
-                           project = "opentaba",
-                           feeds=relevant_feeds(),
-                           parsed_feeds=parse_feeds(relevant_feeds()),
-                           user_email=user_email,
-                           )
-
-"""
-@notifier.route('/addfeed/', methods=['GET', 'POST'])
-@login_required
-def no_new_feed():
+def new_feed():
     error = None
     form = AddFeedForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
+            project = get_project_name_by_feed(form.url.data)
             a_new_feed = Feed(
                 user_id=session['user_id'],
                 name=form.name.data,
-                url=form.url.data
+                url=form.url.data,
+                project=project
+                )
             )
             db.session.add(a_new_feed)
             db.session.commit()
@@ -161,10 +129,6 @@ def no_new_feed():
                           user_email=user_email,
                           )
 
-"""
-def relevant_feeds():
-    return db.session.query(Feed).filter_by(
-        user_id=session['user_id'])
 
 
 @notifier.route('/delete_feed/<int:feed_id>/')

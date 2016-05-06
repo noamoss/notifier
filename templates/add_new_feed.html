@@ -1,6 +1,6 @@
     <div>
         <h2>הוסיפו כתובת הזנה חדשה:</h2>
-            <form method = "POST" action="/addfeed/">
+            <form method = "POST" action="{{ url_for('notifier.new_feed') }}">
             {{ form.csrf_token }}
 
             <p>
