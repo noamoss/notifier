@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import logging
 import logging.handlers
 import traceback
 import sendgrid
@@ -10,7 +9,6 @@ from models import User, Feed
 from feeds import parse_feeds, relevant_feeds
 from datetime import datetime
 from _config import SENDGRID_KEY
-
 
 
 LOG_FILENAME = 'mail_sender.log'
@@ -40,11 +38,12 @@ def build_mail(user):
 
     feeds = parse_feeds(relevant_feeds(user.id))
     last_feed = feeds[0][4]
-
+    """
     if  user.last_feed is not None:
         feeds = [feed for feed in feeds if feed[4] > user.last_feed.date()]
     if not feeds:
         return None
+    """
     try:
         last_update_date = datetime.strftime(user.last_update.date(), '%d/%m/%Y')
     except:

@@ -35,10 +35,12 @@ def set_title_by_feed(url):
     moreinfo = feedparser.parse(url).feed.title
     return (project_name,moreinfo)
 
-def relevant_feeds():
+def relevant_feeds(user_id=None):
+    if user_id == None:
+        user_id = session['user_id']
     # return relevant feeds for user
     return db.session.query(Feed).filter_by(
-        user_id=session['user_id'])
+        user_id=user_id)
 
 def relevant_feeds_urls():
     # return relevant feeds for user
