@@ -103,13 +103,16 @@ def feeds_editor():
 def opentaba_feed():
     url = request.args.get('url')
     relevantfeeds = relevant_feeds_urls()
-
+    print(relevantfeeds)
     if url not in relevantfeeds:
-        city = request.args.get('city')
         title = set_title_by_feed(url)
         title = title[1].split(" ")
-        title.insert(2," "+city+" ")
-        name=" ".join(title)
+        try:
+            city = request.args.get('city')
+            title.insert(2," "+city+" ")
+        except:
+            city=" "
+        name = " ".join(title)
         a_new_feed = Feed(
             user_id=session['user_id'],
             url = request.args.get('url'),
@@ -131,12 +134,18 @@ def new_feed():
     error = None
     form = AddFeedForm(request.form)
     if request.method == 'POST':
-        if form.validate_on_submit():
+        url = form.url.data
+        name = " ".join(set_title_by_feed(url))
+        project = get_project_by_feed_url(url)
+        if project=='תב"ע  פתוחה':
+            return redirect(url_for('notifier.opentaba_feed')+"?url="+url)
+
+        elif form.validate_on_submit():
             a_new_feed = Feed(
                 user_id=session['user_id'],
-                name=" ".join(set_title_by_feed(form.url.data)),
-                url=form.url.data,
-                project=get_project_by_feed_url(form.url.data),
+                name=name,
+                url=url,
+                project=project,
                 )
             db.session.add(a_new_feed)
             db.session.commit()
