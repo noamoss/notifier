@@ -37,7 +37,7 @@ class Feed(db.Model):
         self.project=project
 
     def __repr__(self):
-        return '<user: %s, url %s, project %s>' % (self.user, self.url, self.project)
+        return '<user: %s, url %s, project %s>' % (self.user_id, self.url, self.project)
 
 Projects = {
     "opentaba":'תב"ע פתוחה'

@@ -8,6 +8,7 @@ from urllib.error import URLError
 from wtforms import StringField, DateField, IntegerField, \
     SelectField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, URL
+from feeds import relevant_feeds
 
 class RegisterForm(Form):
     email = StringField(
@@ -43,14 +44,13 @@ class AddFeedForm(Form):
                     URL(message="כתובת מקור לא תקינה")],
         )
 
-    name= StringField(
-        'שם או כותרת',
-        validators=[DataRequired(message="יש להזין כותרת למקור המידע")]
-        )
-
     def validate(self):
         rv = Form.validate(self)
         if not rv:
+            return False
+
+        if not(self.url.data in relevant_feeds()):
+            self.url.errors.append("מקור מידע קיים במנוי")
             return False
 
         url = urlparse(self.url.data).geturl()
@@ -72,4 +72,6 @@ class AddFeedForm(Form):
         except ValueError:
             self.url.errors.append('המקור שהוזן אינו בפורמט JSON או ATOM')
             return False
+
+        self.url=url
         return True

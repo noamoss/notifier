@@ -15,19 +15,6 @@
                     {% endif %}
              </p>
 
-
-            <p>
-                {{ form.name.label }}:
-                {{ form.name(placeholder = "שם להזנה החדשה", value=feed_title) }}
-                    {% if form.name.errors %}
-                    <span class="error">
-                        {% for error in form.name.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </span>
-                    {% endif %}
-            </p>
-
             <button class="brn brn-sm brn-success" type="submit">הוספת מקור</button>
             </form>
         </div>

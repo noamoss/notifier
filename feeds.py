@@ -4,11 +4,12 @@ import operator
 
 from flask import session
 
-from models import Feed
+from models import Feed, User
 from db import db
 from time import mktime
 from datetime import datetime
 from urllib.parse import urlparse
+from sqlalchemy.sql import select
 
 def relevant_feeds(user_id):
     return db.session.query(Feed).filter_by(
@@ -28,14 +29,27 @@ def parse_feeds(feeds):
     return sorted(results, key=operator.itemgetter(4), reverse=True)
 
 
-def get_project_name_by_feed(path):
-    # return project name (and subclass,if relevant, by feed address)
-    first_part_of_path = urlparse(path).netloc.split(".")[0]
-    if "opentaba" in first_part_of_path:
-        city = first_part_of_path.split("-")[1]
-        return "opentaba/"+city
+def set_title_by_feed(url):
+    # return tuple of porject name and specific title for new feeds
+    project_name = get_project_by_feed_url(url)
+    moreinfo = feedparser.parse(url).feed.title
+    return (project_name,moreinfo)
 
 def relevant_feeds():
     # return relevant feeds for user
     return db.session.query(Feed).filter_by(
         user_id=session['user_id'])
+
+def relevant_feeds_urls():
+    # return relevant feeds for user
+    return [x.url for x in db.session.query(Feed.url).filter_by(
+        user_id=session['user_id']).distinct()]
+
+
+def get_project_by_feed_url(url):
+    # return project name (and subclass,if relevant, by feed address)
+    domain_first_part = urlparse(url).netloc.split(".")[0]
+    if "opentaba" in domain_first_part:
+        return 'תב"ע  פתוחה'
+    else:
+        return "לא ידוע"
