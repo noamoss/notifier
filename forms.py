@@ -49,7 +49,7 @@ class AddFeedForm(Form):
         if not rv:
             return False
 
-        if not(self.url.data in relevant_feeds()):
+        if self.url.data in relevant_feeds():
             self.url.errors.append("מקור מידע קיים במנוי")
             return False
 
