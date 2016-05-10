@@ -185,12 +185,12 @@ def delete_feed(feed_id):
 
 @notifier.route('/share')
 # check if a bitly shorten url was already made (and shard) - if it was, add 1 to counter, if not, create one
-def share_item(service='email',link='',project='',title=''):
-    service = request.args.get('service',service)
-    full_url = urllib.parse.quote_plus(request.args.get('url',link))
+def share_item(service=None, title=None, project=None, link=None):
+    service = request.args.get('service')
+    link=urllib.parse.unquote_plus(request.args.get('link'))
     feed_title = request.args.get('title',title)
     project = request.args.get('project',project)
-    locate_link = SharedItem.query.filter_by(full_url=full_url).first()
+    locate_link = SharedItem.query.filter_by(full_url=link).first()
     if locate_link is not None:   #if it is the first time item/link is shared
         locate_link.add_share()
         bitly_link=locate_link.bitly
@@ -198,8 +198,8 @@ def share_item(service='email',link='',project='',title=''):
         project=locate_link.project
     else:                          # if item/link was shared before - add one to counter
         bitlyconnection = bitlyapi.Connection(BITLY_USER, BITLY_KEY)
-        bitly_link = bitlyconnection.shorten((full_url))['url']
-        new_item=SharedItem(full_url=request.parse.unquote(full_url),
+        bitly_link = bitlyconnection.shorten(link)['url']
+        new_item=SharedItem(full_url=urllib.parse.quote_plus(link),
                             bitly=bitly_link,
                             project=project,
                             shares_count=1,
@@ -211,9 +211,9 @@ def share_item(service='email',link='',project='',title=''):
     return redirect(sharing_services[service].format(project,feed_title,bitly_link))
 
 sharing_services = {
-    'facebook': "https://www.facebook.com/sharer/sharer.php?u={2}:{1},{0}",
+    'facebook': "https://www.facebook.com/sharer/sharer.php?u={2}",
     'email':"mailto:?&subject={0}: {1}&body={2}",
     'linkedin':"https://www.linkedin.com/shareArticle?mini=true&url={2}&title={0}:{1}&summary=&source=",
-    'twitter':"https://twitter.com/home?url={2}:{1},{0}",
+    'twitter':"https://twitter.com/intent/tweet?url={2}&text={0}:{1}.via @hasadna",
     'google': "https://plus.google.com/share?url={2}",
     }
