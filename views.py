@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 # import the Flask class from the flask module
-from flask import flash, redirect, render_template, \
-    request, url_for, session
+import urllib
 from functools import wraps
 
-from _config import basedir
-from db import db
-from forms import RegisterForm, LoginForm, AddFeedForm
-from sqlalchemy.exc import IntegrityError
+from flask import flash, redirect, render_template, \
+    request, url_for, session
 from flask.blueprints import Blueprint
-from models import User, Feed, Projects
-import feedparser
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import update
+from _config import basedir, BITLY_USER, BITLY_KEY
+from app.models import User, Feed, SharedItem
+from bitlyapi import bitlyapi
+from db import db
 from feeds import parse_feeds, set_title_by_feed, relevant_feeds,relevant_feeds_urls, get_project_by_feed_url
-
+from forms import RegisterForm, LoginForm, AddFeedForm
 
 notifier = Blueprint('notifier', __name__,
                      template_folder='templates',
@@ -33,6 +34,7 @@ def login_required(test):
 
 @notifier.route('/', methods=['GET', 'POST'])
 def login():
+    print(url_for('static',filename='notifier.png'))
     error = None
     form = LoginForm(request.form)
     if request.method == "POST":
@@ -101,21 +103,20 @@ def feeds_editor():
 
 @notifier.route('/addfeed/opentaba', methods=['GET'])
 def opentaba_feed():
-    url = request.args.get('url')
+    url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
-    print(relevantfeeds)
     if url not in relevantfeeds:
         title = set_title_by_feed(url)
         title = title[1].split(" ")
         try:
-            city = request.args.get('city')
+            city = request.args.get('city','')
             title.insert(2," "+city+" ")
         except:
             city=" "
         name = " ".join(title)
         a_new_feed = Feed(
             user_id=session['user_id'],
-            url = request.args.get('url'),
+            url = request.args.get('link',''),
             name=name,
             project='תב"ע פתוחה '+city,
         )
@@ -136,9 +137,13 @@ def new_feed():
     if request.method == 'POST':
         url = form.url.data
         name = " ".join(set_title_by_feed(url))
-        project = get_project_by_feed_url(url)
-        if project=='תב"ע  פתוחה':
-            return redirect(url_for('notifier.opentaba_feed')+"?url="+url)
+        try:
+            project = get_project_by_feed_url(url)
+        except:
+            pass
+
+        if project==u'תב"ע פתוחה':
+            return redirect(url_for('notifier.opentaba_feed', link= url))
 
         elif form.validate_on_submit():
             a_new_feed = Feed(
@@ -152,8 +157,12 @@ def new_feed():
             flash(u'ההזנה החדשה נוספה למאגר')
             return redirect(url_for('notifier.feeds_editor'))
 
-        user_email = session['user_email']
-        return render_template('feeds_editor.html',
+    elif request.method == 'GET':
+        if request.args.get('project') == u'תב"ע פתוחה':
+            return redirect(url_for('notifier.opentaba_feed',link=request.args.get('link')))
+
+    user_email = session['user_email']
+    return render_template('feeds_editor.html',
                           feed_title=set_title_by_feed(form.url.data),
                           feed_url=form.url.data,
                           form=form,
@@ -174,7 +183,37 @@ def delete_feed(feed_id):
     return redirect(url_for("notifier.feeds_editor"))
 
 
-@notifier.route('/logos/<image>')
-def logos(image):
-    print(basedir+"/templates/images/"+image)
-    return(basedir+"/templates/images/"+image)
+@notifier.route('/share')
+# check if a bitly shorten url was already made (and shard) - if it was, add 1 to counter, if not, create one
+def share_item(service='email',link='',project='',title=''):
+    service = request.args.get('service',service)
+    full_url = urllib.parse.quote_plus(request.args.get('url',link))
+    feed_title = request.args.get('title',title)
+    project = request.args.get('project',project)
+    locate_link = SharedItem.query.filter_by(full_url=full_url).first()
+    if locate_link is not None:   #if it is the first time item/link is shared
+        locate_link.add_share()
+        bitly_link=locate_link.bitly
+        feed_title=locate_link.feed_title
+        project=locate_link.project
+    else:                          # if item/link was shared before - add one to counter
+        bitlyconnection = bitlyapi.Connection(BITLY_USER, BITLY_KEY)
+        bitly_link = bitlyconnection.shorten((full_url))['url']
+        new_item=SharedItem(full_url=request.parse.unquote(full_url),
+                            bitly=bitly_link,
+                            project=project,
+                            shares_count=1,
+                            feed_title=feed_title)
+        db.session.add(new_item)
+
+    db.session.commit()    # save changes to db
+
+    return redirect(sharing_services[service].format(project,feed_title,bitly_link))
+
+sharing_services = {
+    'facebook': "https://www.facebook.com/sharer/sharer.php?u={2}:{1},{0}",
+    'email':"mailto:?&subject={0}: {1}&body={2}",
+    'linkedin':"https://www.linkedin.com/shareArticle?mini=true&url={2}&title={0}:{1}&summary=&source=",
+    'twitter':"https://twitter.com/home?url={2}:{1},{0}",
+    'google': "https://plus.google.com/share?url={2}",
+    }

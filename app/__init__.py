@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from _config import DATABASE_PATH
-from db import db
-from flask import Flask
 import os
-from models import User, Feed
+
+from flask import Flask
+
+from _config import DATABASE_PATH, BITLY_KEY,BITLY_USER
+from app.models import User
+from db import db
 from views import notifier
 
 
@@ -23,11 +25,5 @@ def create_database(app):
     user.password = "12345"
     db.session.commit()
 
-app = create_app()
 
-if __name__ == '__main__':
-    if not os.path.isfile(DATABASE_PATH):
-      create_database(app)
-    with app.app_context():
-        db.create_all()
-    app.run(host="0.0.0.0", port=2525)
+app = create_app()

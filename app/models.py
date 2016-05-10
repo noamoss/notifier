@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy import Column, Integer, String, DateTime, create_engine, ForeignKey
-from sqlalchemy.orm import relationship
-from flask.ext.sqlalchemy import SQLAlchemy
-from db import db
 
+from _config import BITLY_USER, BITLY_KEY
+from bitlyapi import bitlyapi
+from db import db
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -29,16 +29,34 @@ class Feed(db.Model):
     name = db.Column(String, nullable=False)
     url = db.Column(String, nullable=False)
     project = db.Column(String, nullable=False)
+    bitly = db.Column(String)
 
     def __init__(self, user_id, name, url, project):
+        bitlyconnection = bitlyapi.Connection(BITLY_USER,BITLY_KEY)
         self.user_id = user_id
         self.name = name
         self.url = url
+        self.bitly = bitlyconnection.shorten(url)['url']
         self.project=project
 
     def __repr__(self):
         return '<user: %s, url %s, project %s>' % (self.user_id, self.url, self.project)
 
-Projects = {
-    "opentaba":'תב"ע פתוחה'
-}
+class SharedItem(db.Model):
+    __tablename__ = 'shared_items'
+    id = db.Column(Integer, primary_key=True)
+    full_url = db.Column(String, nullable=False)
+    bitly = db.Column(String, nullable=False)
+    shares_count = db.Column(Integer)
+    feed_title= db.Column(String)
+    project= db.Column(String,nullable=False)
+
+    def __init__(self, full_url, bitly, shares_count,feed_title,project):
+        self.full_url=full_url
+        self.bitly = bitly
+        self.shares_count = 1
+        self.feed_title = feed_title
+        self.project = project
+
+    def add_share(self):
+        self.shares_count+=1

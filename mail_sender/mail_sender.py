@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 import logging.handlers
 import traceback
+from datetime import datetime
+
 import sendgrid
 from flask import Flask, render_template
-from db import db
-from models import User, Feed
-from feeds import parse_feeds, relevant_feeds
-from datetime import datetime
-from _config import SENDGRID_KEY
 
+from _config import SENDGRID_KEY
+from app.models import User
+from db import db
+from feeds import parse_feeds, relevant_feeds
 
 LOG_FILENAME = 'mail_sender.log'
 NOTIFIER_MAIL_ADDRESS = "notifier@hasadna.org.il"
