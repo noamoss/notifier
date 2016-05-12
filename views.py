@@ -8,7 +8,7 @@ from flask import flash, redirect, render_template, \
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
-from _config import basedir, BITLY_USER, BITLY_KEY
+from _config import basedir, BITLY_USER, BITLY_KEY, sharing_services
 from app.models import User, Feed, SharedItem
 from bitlyapi import bitlyapi
 from db import db
@@ -209,11 +209,3 @@ def share_item(service=None, title=None, project=None, link=None):
     db.session.commit()    # save changes to db
 
     return redirect(sharing_services[service].format(project,feed_title,bitly_link))
-
-sharing_services = {
-    'facebook': "https://www.facebook.com/sharer/sharer.php?u={2}",
-    'email':"mailto:?&subject={0}: {1}&body={2}",
-    'linkedin':"https://www.linkedin.com/shareArticle?mini=true&url={2}&title={0}:{1}&summary=&source=",
-    'twitter':"https://twitter.com/intent/tweet?url={2}&text={0}:{1}.via @hasadna",
-    'google': "https://plus.google.com/share?url={2}",
-    }

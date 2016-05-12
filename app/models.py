@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import Column, Integer, String, DateTime, create_engine, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, PickleType, ForeignKey
 
 from _config import BITLY_USER, BITLY_KEY
 from bitlyapi import bitlyapi
 from db import db
+from _config import sharing_services
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -50,6 +51,7 @@ class SharedItem(db.Model):
     shares_count = db.Column(Integer)
     feed_title= db.Column(String)
     project= db.Column(String,nullable=False)
+    service_share_counter = db.Column(PickleType)
 
     def __init__(self, full_url, bitly, shares_count,feed_title,project):
         self.full_url=full_url
@@ -57,6 +59,8 @@ class SharedItem(db.Model):
         self.shares_count = 1
         self.feed_title = feed_title
         self.project = project
+        sharing_services_list = list(sharing_services.keys())
+        self.service_share_counter=dict.fromkeys(sharing_services_list,0)
 
     def add_share(self):
         self.shares_count+=1
