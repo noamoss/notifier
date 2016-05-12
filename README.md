@@ -21,8 +21,9 @@ sharing_services = {
     'email':"mailto:?&subject={0}: {1}&body={2}",
     'linkedin':"https://www.linkedin.com/shareArticle?mini=true&url={2}&title={0}:{1}&summary=&source=",
     'twitter':"https://twitter.com/intent/tweet?url={2}&text={0}:{1}.via @hasadna",
-    'google': "https://plus.google.com/share?url={2}",
-    }```
+    'google': "https://plus.google.com/share?url={2}"
+    }
+```
 
 ### db initiation and migration
 ```python
