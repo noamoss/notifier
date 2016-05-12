@@ -3,18 +3,16 @@
 import logging.handlers
 import traceback
 from datetime import datetime
-
 import sendgrid
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, current_app
 
-from _config import SENDGRID_KEY
+from _config import SENDGRID_KEY, MAIL_SUBJECT,NOTIFIER_MAIL_ADDRESS
 from app.models import User
 from db import db
 from feeds import parse_feeds, relevant_feeds
+from run import app
 
 LOG_FILENAME = 'mail_sender.log'
-NOTIFIER_MAIL_ADDRESS = "notifier@hasadna.org.il"
-MAIL_SUBJECT = "לחשושים חדשים מהציפור הקטנה, עדכוני המידע הציבורי שלך"
 
 # Set up a specific logger with our desired output level
 LOGGER = logging.getLogger('mail_sender_log')
@@ -29,6 +27,13 @@ handler = logging.handlers.RotatingFileHandler(
 
 handler.setFormatter(formatter)
 LOGGER.addHandler(handler)
+
+
+def share_url():
+    with app.app_context():
+        print (url_for(current_app.name))
+        print (url_for('notifier.share_item'))
+        return (url_for('notifier.share_item'))
 
 
 def build_mail(user):
@@ -52,7 +57,16 @@ def build_mail(user):
         last_update_date = datetime.strftime(user.last_update.date(), '%d/%m/%Y')
     except:
         last_update_date = "01/01/1980"
-    mail.set_html(render_template('email.html', last_update_date=last_update_date, user=user, feeds=feeds))
+
+    with app.app_context():
+        share_link = url_for('notifier.share_item')
+        feed_link = url_for('notifier.feeds_editor')
+
+    mail.set_html(render_template('email.html', last_update_date=last_update_date,
+                                                user=user,
+                                                feeds=feeds,
+                                                share_link=share_link,
+                                                feed_link=feed_link))
 
     # update the update of the last_feed we sent
     user.last_feed = last_feed
@@ -86,3 +100,4 @@ if '__main__' == __name__:
     except:
         exception = traceback.format_exc()
         LOGGER.error(exception)
+

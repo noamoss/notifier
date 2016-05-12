@@ -4,8 +4,8 @@ import urllib
 from functools import wraps
 
 from flask import flash, redirect, render_template, \
-    request, url_for, session
-from flask.blueprints import Blueprint
+    request, url_for, session, Blueprint
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
 from _config import basedir, BITLY_USER, BITLY_KEY
@@ -19,6 +19,7 @@ notifier = Blueprint('notifier', __name__,
                      template_folder='templates',
                      static_folder='static',
                      )
+
 
 def login_required(test):
     @wraps(test)
@@ -34,7 +35,6 @@ def login_required(test):
 
 @notifier.route('/', methods=['GET', 'POST'])
 def login():
-    print(url_for('static',filename='notifier.png'))
     error = None
     form = LoginForm(request.form)
     if request.method == "POST":
