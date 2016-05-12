@@ -199,7 +199,7 @@ def share_item(service=None, title=None, project=None, link=None):
     else:                          # if item/link was shared before - add one to counter
         bitlyconnection = bitlyapi.Connection(BITLY_USER, BITLY_KEY)
         bitly_link = bitlyconnection.shorten(link)['url']
-        new_item=SharedItem(full_url=urllib.parse.quote_plus(link),
+        new_item=SharedItem(full_url=link,
                             bitly=bitly_link,
                             project=project,
                             shares_count=1,
