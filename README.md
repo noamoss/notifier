@@ -6,8 +6,7 @@ The Notifier enables users to sign up for relevant feeds (API based) and get upd
 
 ## Installation
 1. clone me.
-2. '''pip install requirements.txt''
-3. '''python app.py'''
+2. 'pip install requirements.txt'
 
 ### mail delivery setup
 1. ```python export PYTHONPATH= `<project_path>` ```
@@ -27,3 +26,6 @@ sharing_services = {
 
 ### db initiation and migration
 `python db_migrate db init` and/or `python db_migrate db migrate`
+
+### run local
+'python app.py'
