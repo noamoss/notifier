@@ -28,4 +28,4 @@ sharing_services = {
 `python db_migrate db init` and/or `python db_migrate db migrate`
 
 ### run local
-'python app.py'
+`python app.py`
