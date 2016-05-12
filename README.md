@@ -10,7 +10,7 @@ The Notifier enables users to sign up for relevant feeds (API based) and get upd
 3. '''python app.py'''
 
 ### mail delivery setup
-1. ```python export PYTHONPATH= `<project_path>`` ```
+1. ```python export PYTHONPATH= `<project_path>` ```
 2. set SENDGRID_KEY, sender address and titles on _config.py
 3. use `./mail_sender/mail_sender.py` to check sending
 4. add dictionary of social sharing netweork and links on _config.py:
@@ -26,6 +26,4 @@ sharing_services = {
 ```
 
 ### db initiation and migration
-```python
-python db_migrate db init``` and/or
-```python db_migrate db migrate```
+`python db_migrate db init` and/or `python db_migrate db migrate`
