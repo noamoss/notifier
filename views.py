@@ -191,21 +191,25 @@ def share_item(service=None, title=None, project=None, link=None):
     feed_title = request.args.get('title',title)
     project = request.args.get('project',project)
     locate_link = SharedItem.query.filter_by(full_url=link).first()
-    if locate_link is not None:   #if it is the first time item/link is shared
-        locate_link.add_share()
+    if locate_link is not None:   #if it is not the first time item/link is shared
+        locate_link.add_share(service)
         bitly_link=locate_link.bitly
         feed_title=locate_link.feed_title
         project=locate_link.project
-    else:                          # if item/link was shared before - add one to counter
+        print(service,":",locate_link.service_share_counter[service])
+
+    else:                          # if item/link wasn't shared before -
         bitlyconnection = bitlyapi.Connection(BITLY_USER, BITLY_KEY)
         bitly_link = bitlyconnection.shorten(link)['url']
-        new_item=SharedItem(full_url=link,
+        new_item=SharedItem(feed_title=feed_title,
+                            full_url=link,
                             bitly=bitly_link,
                             project=project,
                             shares_count=1,
-                            feed_title=feed_title)
+                            )
+        new_item.service_share_counter[service] = 1
         db.session.add(new_item)
-
+        print(service,":",new_item.service_share_counter[service])
     db.session.commit()    # save changes to db
 
     return redirect(sharing_services[service].format(project,feed_title,bitly_link))

@@ -62,5 +62,6 @@ class SharedItem(db.Model):
         sharing_services_list = list(sharing_services.keys())
         self.service_share_counter=dict.fromkeys(sharing_services_list,0)
 
-    def add_share(self):
+    def add_share(self,service):
         self.shares_count+=1
+        self.service_share_counter[service]+=1
