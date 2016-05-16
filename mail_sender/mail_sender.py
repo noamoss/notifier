@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+
 import logging.handlers
 import traceback
 from datetime import datetime
@@ -10,7 +12,8 @@ from _config import SENDGRID_KEY, MAIL_SUBJECT,NOTIFIER_MAIL_ADDRESS
 from app.models import User
 from db import db
 from feeds import parse_feeds, relevant_feeds
-from run import app
+from app import app
+
 
 LOG_FILENAME = 'mail_sender.log'
 
@@ -75,9 +78,6 @@ def build_mail(user):
 
 
 def main():
-    app = Flask(__name__)
-    app.config.from_object('_config')
-    db.init_app(app)
     with app.app_context():
 
         LOGGER.debug("starting mail_sender")
