@@ -3,16 +3,18 @@
 import urllib
 from functools import wraps
 
+import flask_bcrypt as bcrypt
 from flask import flash, redirect, render_template, \
     request, url_for, session, Blueprint
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
-from _config import basedir, BITLY_USER, BITLY_KEY, sharing_services
+from _config import basedir, BITLY_USER, BITLY_KEY, sharing_services, relevant_days_for_feed
 from app.models import User, Feed, SharedItem
 from bitlyapi import bitlyapi
 from db import db
-from feeds import parse_feeds, set_title_by_feed, relevant_feeds,relevant_feeds_urls, get_project_by_feed_url
+from feeds import parse_feeds, set_title_by_feed, relevant_feeds,relevant_feeds_urls, get_project_by_feed_url, \
+    save_feed_to_db
 from forms import RegisterForm, LoginForm, AddFeedForm
 
 notifier = Blueprint('notifier', __name__,
@@ -40,7 +42,7 @@ def login():
     if request.method == "POST":
         if form.validate_on_submit():
             user = User.query.filter_by(email=request.form['email']).first()
-            if user is not None and user.password == request.form['password']:
+            if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
                 session['logged_in'] = True
                 session['user_id'] = user.id
                 session['user_email'] = user.email
@@ -70,7 +72,7 @@ def register():
         if form.validate_on_submit():
             new_user = User(
                 form.email.data,
-                form.password.data,
+                bcrypt.generate_password_hash(form.password.data),
             )
             try:
                 db.session.add(new_user)
@@ -97,8 +99,19 @@ def feeds_editor():
     return render_template('feeds_editor.html', user_email=user_email,
         form=AddFeedForm(request.form),
         feeds=relevant_feeds(),
-        parsed_feeds=parse_feeds(relevant_feeds())
+        parsed_feeds=parse_feeds(relevant_feeds()),
+        days_no=relevant_days_for_feed
         )
+
+@notifier.route('/addfeed/kikar', methods=['GET'])
+def kikar_feed():
+    url = request.args.get('link','')
+    relevantfeeds = relevant_feeds_urls()
+    name = set_title_by_feed(url)[1]
+    print (set_title_by_feed(url))
+    user_id = session['user_id']
+    save_feed_to_db(url=url, name=name, project="כיכר המדינה", user_id=user_id,relevant_feeds=relevantfeeds)
+    return redirect(url_for('notifier.feeds_editor'))
 
 
 @notifier.route('/addfeed/opentaba', methods=['GET'])
@@ -134,16 +147,19 @@ def opentaba_feed():
 def new_feed():
     error = None
     form = AddFeedForm(request.form)
+    try:
+        project = get_project_by_feed_url(url)
+
+    except:
+        project =''
+
     if request.method == 'POST':
         url = form.url.data
         name = " ".join(set_title_by_feed(url))
-        try:
-            project = get_project_by_feed_url(url)
-        except:
-            pass
-
         if project==u'תב"ע פתוחה':
             return redirect(url_for('notifier.opentaba_feed', link= url))
+        elif project==u'כיכר המדינה':
+            return redirect(url_for('notifier.kikar_feed', link= url))
 
         elif form.validate_on_submit():
             a_new_feed = Feed(
@@ -158,18 +174,14 @@ def new_feed():
             return redirect(url_for('notifier.feeds_editor'))
 
     elif request.method == 'GET':
-        if request.args.get('project') == u'תב"ע פתוחה':
+        if project == u'תב"ע פתוחה':
             return redirect(url_for('notifier.opentaba_feed',link=request.args.get('link')))
+        elif project == u'כיכר המדינה':
+            return redirect(url_for('notifier.kikar_feed',link=request.args.get('link'), type=request.args.get('type')))
 
     user_email = session['user_email']
-    return render_template('feeds_editor.html',
-                          feed_title=set_title_by_feed(form.url.data),
-                          feed_url=form.url.data,
-                          form=form,
-                          feeds=relevant_feeds(),
-                          parsed_feeds=parse_feeds(relevant_feeds()),
-                          user_email=user_email,
-                          )
+    return redirect(url_for('notifier.feeds_editor'))
+
 
 
 
@@ -213,3 +225,4 @@ def share_item(service=None, title=None, project=None, link=None):
     db.session.commit()    # save changes to db
 
     return redirect(sharing_services[service].format(project,feed_title,bitly_link))
+

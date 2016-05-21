@@ -1,3 +1,6 @@
 th, td {
     text-align: center;
 }
+
+.split-line      { display:block;margin:10px; float:right}
+.split-line span { display:block;float:left;margin-left:10px;}

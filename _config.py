@@ -5,9 +5,11 @@ import os
 # grab the folder where this script lives
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+#SERVER_NAME = '0.0.0.0:2525'
+
 DATABASE = 'notifier.db'
 
-SENDGRID_KEY = ""
+SENDGRID_KEY = "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"
 
 WTF_CSRF_ENABLED = True
 SECRET_KEY = """cb6ae6d9eb6c75 5998bf698dd83c 029d3d15d81f64 0bda227bc296d9 489cb25a00239c
@@ -25,3 +27,24 @@ DATABASE_PATH = os.path.join(basedir, DATABASE)
 
 # the database uri
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_PATH
+
+# bitly keys
+BITLY_KEY="R_aaf1429be2a44cb79cf81f7d5714b672"
+BITLY_USER="hasadna"
+
+# mail_sender setup
+NOTIFIER_MAIL_ADDRESS = "notifier@hasadna.org.il"
+MAIL_SUBJECT = "לחשושים חדשים מהציפור הקטנה, עדכוני המידע הציבורי שלך"
+
+# social sharing services and links
+sharing_services = {
+    'facebook': "https://www.facebook.com/sharer/sharer.php?u={2}",
+    'email':"mailto:?&subject={0}: {1}&body={2}",
+    'linkedin':"https://www.linkedin.com/shareArticle?mini=true&url={2}&title={0}:{1}&summary=&source=",
+    'twitter':"https://twitter.com/intent/tweet?url={2}&text={0}:{1}.via @hasadna",
+    'google': "https://plus.google.com/share?url={2}",
+    }
+
+DEBUG = True
+
+relevant_days_for_feed = 7

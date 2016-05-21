@@ -1,10 +1,13 @@
 alembic==0.8.6
 bcrypt==2.0.0
+beautifulsoup4==4.4.1
+bs4==0.0.1
 cffi==1.6.0
 Django==1.9.4
 dominate==2.2.0
 feedparser==5.2.1
 Flask==0.10.1
+Flask-Bcrypt==0.7.1
 Flask-Login==0.3.2
 Flask-Migrate==1.8.0
 flask-passwordless==0.1.1

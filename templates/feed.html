@@ -1,18 +1,20 @@
     <div>
         <h3> עדכונים אישיים </h3>
        {% for entry in parsed_feeds %}
-        <p>
+        <p class="split-line">
             <b>{{ entry[0] }}:</b><i> {{ entry[1] }}</i>.<br>
-                {{ entry[2] }}<br>
-                <a href="{{ entry[3] }}" target=_blank> למידע הפתוח</a>, שפורסם ב-{{ entry[4] }}.
-                <br>
-                <a href=" {{ url_for('notifier.share_item', service='facebook', project=entry[0], title=entry[2], link=entry[3]) }}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                <a href="{{ url_for('notifier.share_item', service='twitter', project=entry[0], title=entry[2], link=entry[3]) }}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                <a href="{{ url_for('notifier.share_item', service='google', project=entry[0], title=entry[2], link=entry[3]) }}" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                <a href="{{ url_for('notifier.share_item', service='linkedin', project=entry[0], title=entry[2], link=entry[3]) }}" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                <a href="{{ url_for('notifier.share_item', service='email', project=entry[0], title=entry[2], link=entry[3]) }}" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i></a>
-            <br>
+                {{ entry[2] }}<br><br>
 
+                <a href="{{ entry[3] }}" target=_blank>קישור לפרסום המקורי</a>, שפורסם ב-{{ entry[4] }}.
+                <span>
+                    <a href=" {{ url_for('notifier.share_item', service='facebook', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('notifier.share_item', service='twitter', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('notifier.share_item', service='google', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('notifier.share_item', service='linkedin', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('notifier.share_item', service='email', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                </span>
+
+            <br><br><br>
         </p>
     {% endfor %}
     </div>
