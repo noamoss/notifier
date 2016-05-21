@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, render_template
 
 from _config import DATABASE_PATH, BITLY_KEY,BITLY_USER
 from app.models import User
@@ -32,3 +32,7 @@ def create_database(app):
 
 
 app = create_app()
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html')
