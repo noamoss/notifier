@@ -1,0 +1,7 @@
+<form method="post" action="/">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+</form>
+<p>שלום שלום. לחצו בבקשה על הקישור הבא, כדי לאשר את הרשמתם לשירות</p>
+<p><a href="{{ confirm_url }}">{{ confirm_url }}</a></p>
+<br>
+<p>תודה!</p>
