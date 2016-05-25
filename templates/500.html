@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "_base.html" %}
 
-</body>
-</html>
+{% blcok content %}
+
+    <h1>'משהו השתגע לנו'</h1>
+    <p> מסתבר שגם לציפור הקטנה יש בעיות בבסיס הנתונם. אנחנו עובדים לטפל בה, ממש עכשיו!</p>
+    <p><a href = "{{urf_for('notifier.login')}}">בחזרה לקן</a></p>
+
+{% endblock %}

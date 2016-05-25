@@ -14,11 +14,15 @@ class User(db.Model):
     password = db.Column(String, nullable=False)
     last_update = db.Column(DateTime, nullable=True)
     last_feed = db.Column(DateTime, nullable=True)
+    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_on = db.Column(db.DateTime, nullable=True)
 
-    def __init__(self, email=None, password=None, last_update=None):
+    def __init__(self, email=None, password=None, last_update=None, confirmed=None, confirmed_on=None):
         self.email = email
         self.password = password
         self.last_update = last_update
+        self.confirmed = confirmed
+        self.confirmed_on = confirmed_on
 
     def __repr__(self):
         return '<email %s>' % (self.email)

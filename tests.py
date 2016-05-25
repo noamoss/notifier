@@ -3,6 +3,7 @@ import datetime
 import os
 import unittest
 
+import flask_bcrypt as bcrypt
 from flask_testing import TestCase
 
 from _config import basedir
@@ -23,8 +24,8 @@ class UserTests(TestCase):
         app.config['WTF_CSRF_ENABLED'] = False
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-                                                os.path.join(basedir, TEST_DB)
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, TEST_DB)
+        self.app = app.test_client()
         return app
 
     # executed prior to each test
@@ -128,7 +129,8 @@ class UserTests(TestCase):
 
 
     def create_user(self, email,password):
-        new_user = User(email = email,password=password)
+        new_user = User(email = email,
+                        password=bcrypt.generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
 
@@ -169,7 +171,7 @@ class UserTests(TestCase):
         response = self.login('noamoss@a.b.com','flask')
         self.assertEquals(response.status_code, 500)
         self.assertNotIn(b'ValueError: Invalid salt', response.data)
-        self.assertIn(str(bytes('משהו התשגע לנו','utf-8'),response.data.decode('utf-8')))
+        self.assertIn(str(bytes('משהו השתגע לנו','utf-8'),response.data.decode('utf-8')))
 
 
 if __name__ == '__main__':

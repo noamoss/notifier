@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
 # import the Flask class from the flask module
+import datetime
 import urllib
 from functools import wraps
 
 import flask_bcrypt as bcrypt
+import sendgrid
 from flask import flash, redirect, render_template, \
     request, url_for, session, Blueprint
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import update
-from _config import basedir, BITLY_USER, BITLY_KEY, sharing_services, relevant_days_for_feed
+from _config import basedir, BITLY_USER, BITLY_KEY, sharing_services, relevant_days_for_feed, \
+    NOTIFIER_MAIL_ADDRESS, MAIL_SUBJECT, SENDGRID_KEY
 from app.models import User, Feed, SharedItem
 from bitlyapi import bitlyapi
 from db import db
 from feeds import parse_feeds, set_title_by_feed, relevant_feeds,relevant_feeds_urls, get_project_by_feed_url, \
     save_feed_to_db
 from forms import RegisterForm, LoginForm, AddFeedForm
+from tokenit import generate_confirmation_token, confirmed_token
 
 notifier = Blueprint('notifier', __name__,
                      template_folder='templates',
@@ -73,15 +77,35 @@ def register():
             new_user = User(
                 form.email.data,
                 bcrypt.generate_password_hash(form.password.data),
+                confirmed=False,
             )
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                flash(u'תודה שנרשמת. כעת ניתן להתחבר לאתר')
-                return redirect(url_for('notifier.login'))
+
             except IntegrityError:
                 error = 'כתובת הדוא"ל הזו כבר קיימת באתר.'
                 return render_template('register.html', form=form, error=error)
+
+            token = generate_confirmation_token(new_user.email)
+            confirm_url = url_for('notifier.confirmed_email',token=token,_external=True)
+
+            session['logged_in'] = True
+            session['user_id'] = new_user.id
+            session['user_email'] = new_user.email
+
+            client = sendgrid.SendGridClient(SENDGRID_KEY)
+            conf_mail = sendgrid.Mail()
+            conf_mail.add_to(new_user.email)
+            conf_mail.set_from(NOTIFIER_MAIL_ADDRESS)
+            conf_mail.set_subject(MAIL_SUBJECT)
+            conf_mail.set_html(render_template('user/activate.html',confirm_url=confirm_url))
+            client.send(conf_mail)
+
+            flash(u'תודה שנרשמת. כעת ניתן להתחבר לאתר')
+            return redirect(url_for('notifier.feeds_editor'))
+        else:
+            print(form.errors)
     return render_template("register.html", form=form, error=error)
 
 
@@ -226,3 +250,21 @@ def share_item(service=None, title=None, project=None, link=None):
 
     return redirect(sharing_services[service].format(project,feed_title,bitly_link))
 
+
+@notifier.route('/confirm/<token>')
+@login_required
+def confirmed_email(token):
+    try:
+        email = confirmed_token(token)
+    except:
+        flash("הקישור לאישור ההרשמה אינו תקין או שפג תוקפו", "תקלה")
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.confirmed():
+        flash("החשבון כבר אושר בעבר. אנא התחבר/י","הצלחה")
+    else:
+        user.confirmed = True
+        user.confirmed_on = datetime.datetime.now()
+        db.session.add(User)
+        db.session.commit()
+        flash("אישרת את חשבונך, תודה!", "הצלחה")
+    return redirect(url_for('notifier.login'))
