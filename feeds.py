@@ -25,7 +25,10 @@ def parse_feeds(feeds):
     for feed in feeds:
         feed_data = feedparser.parse(feed.url)
         for entry in feed_data.entries:
-            published_date = datetime.datetime.fromtimestamp(mktime(entry.updated_parsed)).date()
+            try:
+                published_date = datetime.datetime.fromtimestamp(mktime(entry.updated_parsed)).date()
+            except:
+                published_date = "לא ידוע"
             summary = BeautifulSoup(entry.summary).get_text()
             if datetime.datetime.today().date() - published_date <= datetime.timedelta(relevant_days_for_feed):
                 results.append([feed.name, entry.title, summary, urllib.parse.quote(entry.link),published_date])
