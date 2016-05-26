@@ -8,7 +8,7 @@ from datetime import datetime
 import sendgrid
 from flask import Flask, render_template, url_for, current_app
 
-from _config import SENDGRID_KEY, MAIL_SUBJECT,NOTIFIER_MAIL_ADDRESS
+from _config import SENDGRID_KEY, MAIL_SUBJECT,NOTIFIER_MAIL_ADDRESS,SERVER_NAME
 from app.models import User
 from db import db
 from feeds import parse_feeds, relevant_feeds
@@ -34,8 +34,6 @@ LOGGER.addHandler(handler)
 
 def share_url():
     with app.app_context():
-        print (url_for(current_app.name))
-        print (url_for('notifier.share_item'))
         return (url_for('notifier.share_item'))
 
 
