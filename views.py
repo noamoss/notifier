@@ -146,13 +146,12 @@ def opentaba_feed():
         try:
             city = request.args.get('city','')
         except:
-            city=" "
-        name = " ".join(title)
+            city=""
         a_new_feed = Feed(
             user_id=session['user_id'],
             url = request.args.get('link',''),
-            name=name,
-            project='תב"ע פתוחה '+city,
+            name='תב"ע פתוחה '+city,
+            project='תב"ע פתוחה',
         )
         db.session.add(a_new_feed)
         db.session.commit()
@@ -169,7 +168,7 @@ def new_feed():
     error = None
     form = AddFeedForm(request.form)
     try:
-        project = get_project_by_feed_url(url)
+        project = get_project_by_feed_url(form.url.data)
 
     except:
         project =''
