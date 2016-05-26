@@ -56,10 +56,11 @@ def login():
                 error = 'כתובת דוא"ל או סיסמה שגויים'
         else:
             error = "שני השדות דרושים להתחברות."
-    elif session['logged_in'] == True:  #if already logged in:
-        flash(u'ברוכים השבים, את/ה כבר מחוברת!')
-        return redirect(url_for('notifier.feeds_editor'))
-    else:
+    try:
+        if session['logged_in'] == True:  #if already logged in:
+            flash(u'ברוכים השבים, את/ה כבר מחוברת!')
+            return redirect(url_for('notifier.feeds_editor'))
+    except:
         return render_template("login.html", form=form, error=error)
 
 
