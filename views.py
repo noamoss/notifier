@@ -151,11 +151,19 @@ def opentaba_feed():
             city = request.args.get('city','')
         except:
             city=""
+
+        name = set_title_by_feed(url)[1]
+        try:
+            name_temp = name.split(" ")
+            name_temp[2] = city+", "
+            name= " ".join(name_temp)
+        except:
+            pass
         a_new_feed = Feed(
             user_id=session['user_id'],
             url = request.args.get('link',''),
-            name='תב"ע פתוחה '+city,
-            project='תב"ע פתוחה',
+            name=name,
+            project='תב"ע פתוחה '+city,
         )
         db.session.add(a_new_feed)
         db.session.commit()
