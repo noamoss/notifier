@@ -41,7 +41,7 @@ def set_title_by_feed(url):
     try:
         title = feedparser.parse(url).feed.title
     except:
-        title=""
+        title=None
     return (project_name,title)
 
 def relevant_feeds(user_id=None):
