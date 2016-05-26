@@ -144,8 +144,10 @@ def opentaba_feed():
     relevantfeeds = relevant_feeds_urls()
     if url not in relevantfeeds:
         title = set_title_by_feed(url)
-        if " " in title[1]:
+        try:
             title = title[1].split(" ")
+        except:
+            title = ""
         try:
             city = request.args.get('city','')
             title.insert(2," "+city+" ")
