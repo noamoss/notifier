@@ -62,3 +62,6 @@ target/
 
 # sensitive
 local_config.py
+
+# .idea
+.idea
