@@ -110,7 +110,7 @@ def register():
             flash(u'תודה שנרשמת. כעת ניתן להתחבר לאתר')
             return redirect(url_for('notifier.feeds_editor'))
         else:
-            print(form.errors)
+            pass #(instead of printing error)
     return render_template("register.html", form=form, error=error)
 
 
@@ -243,7 +243,6 @@ def share_item(service=None, title=None, project=None, link=None):
         bitly_link=locate_link.bitly
         feed_title=locate_link.feed_title
         project=locate_link.project
-        print(service,":",locate_link.service_share_counter[service])
 
     else:                          # if item/link wasn't shared before -
         bitlyconnection = bitlyapi.Connection(BITLY_USER, BITLY_KEY)

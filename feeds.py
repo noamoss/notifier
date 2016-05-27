@@ -59,7 +59,6 @@ def relevant_feeds_urls():
 
 def get_project_by_feed_url(url):
     # return project name (and subclass,if relevant, by feed address)
-    print ("HEY: ",urllib.parse.urlparse(url).netloc)
     domain_first_part = urllib.parse.urlparse(url).netloc.split(".")[0]
     if "opentaba" in domain_first_part:
         return 'תב"ע פתוחה'
