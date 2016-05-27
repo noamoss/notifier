@@ -138,7 +138,6 @@ def kikar_feed():
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
     name = set_title_by_feed(url)[1]
-    print (set_title_by_feed(url))
     user_id = session['user_id']
     save_feed_to_db(url=url, name=name, project="כיכר המדינה", user_id=user_id,relevant_feeds=relevantfeeds)
     return redirect(url_for('notifier.feeds_editor'))
@@ -255,7 +254,6 @@ def share_item(service=None, title=None, project=None, link=None):
                             )
         new_item.service_share_counter[service] = 1
         db.session.add(new_item)
-        print(service,":",new_item.service_share_counter[service])
     db.session.commit()    # save changes to db
 
     return redirect(sharing_services[service].format(project,feed_title,bitly_link))
