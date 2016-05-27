@@ -56,11 +56,11 @@ def login():
                 error = 'כתובת דוא"ל או סיסמה שגויים'
         else:
             error = "שני השדות דרושים להתחברות."
-    try:
-        if session['logged_in'] == True:  #if already logged in:
-            flash(u'ברוכים השבים, את/ה כבר מחוברת!')
-            return redirect(url_for('notifier.feeds_editor'))
-    except:
+
+    if 'logged_in' in session:  #if already logged in:
+        flash(u'ברוכים השבים, את/ה כבר מחוברת!')
+        return redirect(url_for('notifier.feeds_editor'))
+    else:
         return render_template("login.html", form=form, error=error)
 
 
@@ -133,6 +133,7 @@ def feeds_editor():
         )
 
 @notifier.route('/addfeed/kikar', methods=['GET'])
+@login_required
 def kikar_feed():
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
@@ -144,6 +145,7 @@ def kikar_feed():
 
 
 @notifier.route('/addfeed/opentaba', methods=['GET'])
+@login_required
 def opentaba_feed():
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
