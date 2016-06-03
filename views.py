@@ -27,6 +27,7 @@ notifier = Blueprint('notifier', __name__,
                      )
 
 
+
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
@@ -64,7 +65,7 @@ def login():
         return render_template("login.html", form=form, error=error)
 
 
-@notifier.route('/logout/')
+@notifier.route('/logout')
 @login_required
 def logout():
     session.pop('logged_in', None)
@@ -132,9 +133,14 @@ def feeds_editor():
         days_no=relevant_days_for_feed
         )
 
+@notifier.route('/add/<string:projectname>', methods=['GET'])
+@login_required
+def add_project_feed(projectname):
+    return redirect(url_for('notifier.add_feed_'+projectname, **request.args))
+
 @notifier.route('/addfeed/kikar', methods=['GET'])
 @login_required
-def kikar_feed():
+def add_feed_kikar():
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
     name = set_title_by_feed(url)[1]
@@ -145,7 +151,8 @@ def kikar_feed():
 
 @notifier.route('/addfeed/opentaba', methods=['GET'])
 @login_required
-def opentaba_feed():
+def add_feed_opentaba():
+    print("WOWOW!!!")
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
     if url not in relevantfeeds:
