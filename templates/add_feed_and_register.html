@@ -1,10 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "_base.html" %}
+{% block content %}
 
-</body>
-</html>
+<div class="login_menu">
+    <ul class="nav nav-pills nav-justified">
+        <li class="active"><a data-toggle="pill" href="#login">חשבון קיים</a></li>
+        <li><a data-toggle="pill" href="#register">חשבון חדש</a></li>
+    </ul>
+
+    <div class="tab-content text-center">
+        <div id="login" class="tab-pane fade in active">
+            <h5>התחבר/י לחשבון קיים, כדי להוסיף התראות מהמקור החדש</h5>
+            <form method ="post" action="#login">
+                {{ login_form.csrf_token }}
+               <p>
+                {{ login_form.email(placeholder='כתובת דוא"ל') }}
+                    <span class="error">
+                        {% if login_form.email.errors %}
+                            {% for error in login_form.email.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+
+                {{ login_form.password(placeholder="סיסמה") }}
+                    <span class="error">
+                    {% if login_form.password.errors %}
+                        {% for error in login_form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    {% endif %}
+                    </span>
+
+               </p>
+                <button class="btn btn-sm btn-success " type="submit" name="btn" value="login">התחברות</button>
+            </form>
+        <br>
+        <p><em> צריכים חשבון ?? </em><a data-toggle="tab" href="#register">הירשמו!!</a></p>
+
+        </div>
+
+        <div id="register" class="tab-pane fade">
+
+            <h5> צרו לכם חשבון, כדי להוסיף מקורות, לעקוב או להפסיק התראות.</h5>
+
+            <form method = "post" action="#register">
+                <p>
+                    {{ register_form.csrf_token }}
+                        {{ register_form.email(placeholder = 'כתובת דוא"ל') }}
+                    {% if register_form.email.errors %}
+                    <span class="error">
+                        {% for error in register_form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                    {% endif %}
+
+                {{ register_form.password(placeholder="הסיסמה שתרצו") }}
+                {% if register_form.password.errors %}
+                    <span class="error">
+                        {% for error in register_form.password.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                {% endif %}
+                </p>
+                <p>
+                    {{ register_form.confirm(placeholder="ושוב, הסיסמה, לוודא שהבנו") }}
+                        {% if register_form.confirm.errors %}
+                        <span class="error">
+                            {% for error in register_form.confirm.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </span>
+                        {% endif %}
+                </p>
+
+        <button class="btn btn-sm btn-success" type="submit" name="btn" value="register">הרשמה</button>
+        <br><br>
+        <p><em>כבר רשומים?</em> הקליקו <a data-toggle="tab" href="#login">כאן</a> כדי להתחבר.</p>
+    </form>
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+   var obj_load={% if set_tab==1%}1{%else%}0{%endif%};
+   tab_load=(obj_load?"#register":"#login");
+
+   $(document).ready(function () {
+       if(location.hash || obj_load) {
+       $('.nav a[href$="'+(location.hash ||  tab_load)+'"]').trigger("click");
+       }
+    });
+
+</script>
+
+{% endblock %}

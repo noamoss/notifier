@@ -48,11 +48,7 @@ def login():
         if form.validate_on_submit():
             user = User.query.filter_by(email=request.form['email']).first()
             if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
-                session['logged_in'] = True
-                session['user_id'] = user.id
-                session['user_email'] = user.email
-                flash(u'ברוכים הבאים, תהנו!')
-                return redirect(url_for('notifier.feeds_editor'))
+                login_user(user)
             else:
                 error = 'כתובת דוא"ל או סיסמה שגויים'
         else:
@@ -96,9 +92,7 @@ def register():
             token = generate_confirmation_token(new_user.email)
             confirm_url = url_for('notifier.confirmed_email',token=token,_external=True)
 
-            session['logged_in'] = True
-            session['user_id'] = new_user.id
-            session['user_email'] = new_user.email
+            login_user(new_user)
 
             client = sendgrid.SendGridClient(SENDGRID_KEY)
             conf_mail = sendgrid.Mail()
@@ -133,11 +127,6 @@ def feeds_editor():
         days_no=relevant_days_for_feed
         )
 
-@notifier.route('/add/<string:projectname>', methods=['GET'])
-@login_required
-def add_project_feed(projectname):
-    return redirect(url_for('notifier.add_feed_'+projectname, **request.args))
-
 @notifier.route('/addfeed/kikar', methods=['GET'])
 @login_required
 def add_feed_kikar():
@@ -152,7 +141,6 @@ def add_feed_kikar():
 @notifier.route('/addfeed/opentaba', methods=['GET'])
 @login_required
 def add_feed_opentaba():
-    print("WOWOW!!!")
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
     if url not in relevantfeeds:
@@ -183,47 +171,90 @@ def add_feed_opentaba():
         return redirect(url_for('notifier.feeds_editor'))
 
 
-@notifier.route('/addfeed', methods=['GET', 'POST'])
-@login_required
-def new_feed():
-    error = None
-    form = AddFeedForm(request.form)
-    try:
-        project = get_project_by_feed_url(form.url.data)
-
-    except:
-        project =''
-
-    if request.method == 'POST':
-        url = form.url.data
-        name = " ".join(set_title_by_feed(url))
-        if project==u'תב"ע פתוחה':
-            return redirect(url_for('notifier.opentaba_feed', link= url))
-        elif project==u'כיכר המדינה':
-            return redirect(url_for('notifier.kikar_feed', link= url))
-
-        elif form.validate_on_submit():
-            a_new_feed = Feed(
-                user_id=session['user_id'],
-                name=name,
-                url=url,
-                project=project,
-                )
-            db.session.add(a_new_feed)
-            db.session.commit()
-            flash(u'ההזנה החדשה נוספה למאגר')
-            return redirect(url_for('notifier.feeds_editor'))
-
-    elif request.method == 'GET':
-        if project == u'תב"ע פתוחה':
-            return redirect(url_for('notifier.opentaba_feed',link=request.args.get('link')))
-        elif project == u'כיכר המדינה':
-            return redirect(url_for('notifier.kikar_feed',link=request.args.get('link'), type=request.args.get('type')))
-
-    user_email = session['user_email']
-    return redirect(url_for('notifier.feeds_editor'))
+def login_user(user):
+    session['logged_in'] = True
+    session['user_id'] = user.id
+    session['user_email'] = user.email
+    flash(u'ברוכים הבאים, תהנו!')
 
 
+@notifier.route('/add/<string:projectname>', methods=['GET','POST'])
+def trying(projectname=None):
+    if 'logged_in' in session and projectname!=None:  # if already logged in
+        return redirect(
+            url_for('notifier.add_feed_' + projectname, **request.args))
+    else:                          # if not logged in - either login and add feed or register and add feed
+        error= None
+        login_form=LoginForm(request.form)
+        register_form=RegisterForm(request.form)
+        if request.method == "POST":
+            if request.form['btn'] == 'login':    #for returning users
+                if login_form.validate_on_submit():
+                    user = User.query.filter_by(email=request.form['email']).first()
+                    if user is not None and bcrypt.check_password_hash(user.password,
+                                                                       request.form[
+                                                                           'password']):
+                        login_user(user)
+                        return redirect(
+                            url_for('notifier.add_feed_' + projectname, **request.args))
+                    else:
+                        error = 'כתובת דוא"ל או סיסמה שגויים'
+                else:
+                    error = "שני השדות דרושים להתחברות."
+
+                return render_template('add_feed_and_register.html',
+                                       register_form=register_form,
+                                       login_form=login_form,
+                                       error=error)
+
+            elif request.form['btn'] == 'register':        # for new users
+                if register_form.validate_on_submit():
+                    new_user = User(
+                        register_form.email.data,
+                        bcrypt.generate_password_hash(register_form.password.data),
+                     confirmed=False,
+                    )
+                    try:
+                        db.session.add(new_user)
+                        db.session.commit()
+
+                    except IntegrityError:
+                        error = 'כתובת הדוא"ל הזו כבר קיימת באתר.'
+                        return render_template('add_feed_and_register.html',
+                                   set_tab=1,
+                                   register_form=register_form,
+                                   login_form=login_form,
+                                   error=error)
+
+                    token = generate_confirmation_token(new_user.email)
+                    confirm_url = url_for('notifier.confirmed_email', token=token,
+                                          _external=True)
+
+                    client = sendgrid.SendGridClient(SENDGRID_KEY)
+                    conf_mail = sendgrid.Mail()
+                    conf_mail.add_to(new_user.email)
+                    conf_mail.set_from(NOTIFIER_MAIL_ADDRESS)
+                    conf_mail.set_subject(MAIL_SUBJECT)
+                    conf_mail.set_html(render_template('user/activate.html',
+                                                       confirm_url=confirm_url))
+                    client.send(conf_mail)
+
+                    flash(u'תודה שנרשמת.')
+                    login_user(new_user)
+                    return redirect(
+                        url_for('notifier.add_feed_' + projectname,**request.args))
+
+                return render_template('add_feed_and_register.html',
+                                       set_tab=1,
+                                       register_form=register_form,
+                                       login_form=login_form,
+                                       error=error)
+
+        elif request.method == "GET":
+            return render_template('add_feed_and_register.html',
+                               register_form=register_form,
+                               login_form=login_form,
+                               error=error)
 
 
 @notifier.route('/delete_feed/<int:feed_id>/')

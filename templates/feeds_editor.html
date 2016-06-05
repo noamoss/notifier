@@ -2,15 +2,10 @@
 {% block content %}
     {{ user_email }}      |   <a href = "/logout"> התנתקות</a>
     <div class="row">
-    <h1> ציפור קטנה </h1>
-        <img src="{{ url_for('static', filename='notifier.png') }}" width="60px" />
-        <div class="col-md-5">
+        <div class="col-md-10">
             {% include "registered_feeds.html" %}
         </div>
-        <div class="col-md-5">
-            {% include "add_new_feed.html" %}
-        </div>
-    </div>
+
 <br><br>
     <div class="row">
         <p>עדכונים מה-{{days_no}} ימים האחרונים</p>

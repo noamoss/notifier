@@ -13,15 +13,15 @@ from feeds import relevant_feeds
 class RegisterForm(Form):
     email = StringField(
         'Email',
-        validators=[DataRequired(), Email(), Length(min=6, max=40)]
+        validators=[DataRequired(message="שדה חובה"), Email(message="כתובת לא תקינה"), Length(min=6, max=40,message="")]
     )
     password = PasswordField(
         'Password',
-        validators=[DataRequired(), Length(min=5, max=40)]
+        validators=[DataRequired(message="שדה חובה"), Length(min=5, max=40, message="סיסמה באורך 5-40 תוים")]
     )
     confirm = PasswordField(
         'Repeat Password',
-        validators=[DataRequired(),
+        validators=[DataRequired(message="שדה חובה"),
                     EqualTo('password',
                             message='הסיסמאות אינן תואמות')]
     )
@@ -30,11 +30,11 @@ class RegisterForm(Form):
 class LoginForm(Form):
     email = StringField(
         'Email',
-        validators=[DataRequired()]
+        validators=[DataRequired(message="שדה חובה")]
     )
     password = PasswordField(
         'Password',
-        validators=[DataRequired()]
+        validators=[DataRequired(message="שדה חובה")]
     )
 
 class AddFeedForm(Form):

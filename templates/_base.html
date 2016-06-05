@@ -11,11 +11,17 @@
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
      <meta charset="UTF-8">
+        <script src=" {{url_for('static', filename='jquery-2.2.4.min.js') }}"></script>
+
     </head>
 
 <body dir="rtl">
     <div class="container">
-
+    <h4>
+        <img src="{{ url_for('notifier.static', filename='hasadna-logo.jpg') }}" height="40px"/>
+    לחשושים ועדכונים ממקורות המידע הציבורי הפתוח
+        <img src="{{ url_for('notifier.static', filename='notifier.png') }}" height="40px"/>
+    </h4>
          {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
