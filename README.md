@@ -10,7 +10,7 @@ The Notifier enables users to sign up for relevant feeds (API based) and get upd
 
 ### mail delivery setup
 1. ```python export PYTHONPATH= `<project_path>` ```
-2. set SENDGRID_KEY, sender address and titles on _config.py
+2. set SENDGRID_KEY, sender address and titles on local_config.py
 3. use `./mail_sender/mail_sender.py` to check sending
 4. add dictionary of social sharing netweork and links on _config.py:
 
@@ -29,3 +29,7 @@ sharing_services = {
 
 ### run local
 `python app.py`
+
+### add project's feed
+set on views route (/addfeed/porjectname):
+`<notifier_url>/add/<project_name>?link=<feed_url>&otherparam=<value>`
