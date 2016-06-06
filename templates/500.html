@@ -1,6 +1,6 @@
 {% extends "_base.html" %}
 
-{% blcok content %}
+{% block content %}
 
     <h1>'משהו השתגע לנו'</h1>
     <p> מסתבר שגם לציפור הקטנה יש בעיות בבסיס הנתונם. אנחנו עובדים לטפל בה, ממש עכשיו!
@@ -8,6 +8,6 @@
     <a href="http://forum.hasadna.org.il/t/topic/1337" target="_blank">ספר/י לנו כאן</a>
 איך זה קרה - על מה לחצת, מה כתבת, ואם אפשר - גם צילום מסך יעזור.
     </p>
-    <p><a href = "{{urf_for('notifier.login')}}">בחזרה לקן</a></p>
+    <p><a href = "{{url_for('notifier.login')}}">בחזרה לקן</a></p>
 
 {% endblock %}

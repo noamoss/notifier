@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # import the Flask class from the flask module
-import datetime
-import urllib
+
+import datetime, urllib, sys
 from functools import wraps
 
 import flask_bcrypt as bcrypt
@@ -143,39 +143,44 @@ def add_feed_kikar():
 def add_feed_opentaba():
     url = request.args.get('link','')
     relevantfeeds = relevant_feeds_urls()
-    if url not in relevantfeeds:
-        try:
-            city = request.args.get('city','')
-        except:
-            city=""
+    try:
+        if url not in relevantfeeds:
+            try:
+                city = request.args.get('city','')
+            except:
+                city=""
 
-        name = set_title_by_feed(url)[1]
-        try:
-            name_temp = name.split(" ")
+            name = set_title_by_feed(url)[1]
+            try:
+                name_temp = name.split(" ")
+            except:
+                name_temp = [name,"",""]
             name_temp[2] = city+", "
             name= " ".join(name_temp)
-        except:
-            pass
-        a_new_feed = Feed(
-            user_id=session['user_id'],
-            url = request.args.get('link',''),
-            name=name,
-            project='תב"ע פתוחה '+city,
-        )
-        db.session.add(a_new_feed)
-        db.session.commit()
-        flash(u'ההזנה החדשה נוספה למאגר')
-        return redirect(url_for('notifier.feeds_editor'))
-    else:
-        flash(u'את/ה כבר עוקבים אחרי מקור מידע זה')
-        return redirect(url_for('notifier.feeds_editor'))
+            a_new_feed = Feed(
+                user_id=session['user_id'],
+                url=request.args.get('link', ''),
+                name=name,
+                project='תב"ע פתוחה ' + city,
+            )
+            db.session.add(a_new_feed)
+            db.session.commit()
+            flash(u'ההזנה החדשה נוספה למאגר')
+            return redirect(url_for('notifier.feeds_editor'))
+
+        else:
+            flash(u'את/ה כבר עוקבים אחרי מקור מידע זה')
+            return redirect(url_for('notifier.feeds_editor'))
+
+    except (ValueError, KeyError, TypeError):
+        errormsg = "type: " + str(sys.exc_info()[0]) + ", value: " + str(sys.exc_info()[1]) + ", traceback: " + str(sys.exc_info()[2])
+        return render_template('error.html', errormsg=errormsg)
 
 
 def login_user(user):
     session['logged_in'] = True
     session['user_id'] = user.id
     session['user_email'] = user.email
-    flash(u'ברוכים הבאים, תהנו!')
 
 
 @notifier.route('/add/<string:projectname>', methods=['GET','POST'])
@@ -315,15 +320,14 @@ def confirmed_email(token):
         flash("אישרת את חשבונך, תודה!", "הצלחה")
     return redirect(url_for('notifier.login'))
 
-@notifier.app_errorhandler(500)
-def internal_error(error):
-    return render_template('500.html'), 500
-
 
 @notifier.app_errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404
 
+@notifier.app_errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 @notifier.app_errorhandler(502)
 def feed_error(error):
