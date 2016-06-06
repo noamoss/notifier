@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Override these using a local_config.py file
 
 # Server
-# SERVER_NAME = '0.0.0.0:2525'
+SERVER_NAME = None
 
 # Database
 DATABASE = ''
@@ -27,6 +27,7 @@ BITLY_USER = ''
 # mail_sender setup
 NOTIFIER_MAIL_ADDRESS = ''
 MAIL_SUBJECT = ''
+
 
 # End of instance specific config
 

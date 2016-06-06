@@ -33,8 +33,7 @@ LOGGER.addHandler(handler)
 
 
 def share_url():
-    with app.app_context():
-        return (url_for('notifier.share_item'))
+    return (url_for('notifier.share_item'))
 
 
 def build_mail(user):
@@ -59,9 +58,8 @@ def build_mail(user):
     except:
         last_update_date = "01/01/1980"
 
-    with app.app_context():
-        share_link = url_for('notifier.share_item')
-        feed_link = url_for('notifier.feeds_editor')
+    share_link = url_for('notifier.share_item')
+    feed_link = url_for('notifier.feeds_editor')
 
     mail.set_html(render_template('email.html', last_update_date=last_update_date,
                                                 user=user,
