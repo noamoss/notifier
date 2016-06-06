@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> הציפור הקטנה - עדכונים ולחשושים על מידע ציבורי</title>
+        <title> הציפור הקטנה - עדכונים ולחשושים על מידע ציבורי(שירות ניסיוני)</title>
         <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/yeti/bootstrap.min.css" rel=stylesheet type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
         <link href="{{ url_for('static', filename='main.css') }}" rel=stylesheet type=text/css>
@@ -17,11 +17,12 @@
 
 <body dir="rtl">
     <div class="container">
-    <h4>
+    <h3>
         <img src="{{ url_for('notifier.static', filename='hasadna-logo.jpg') }}" height="40px"/>
     לחשושים ועדכונים ממקורות המידע הציבורי הפתוח
         <img src="{{ url_for('notifier.static', filename='notifier.png') }}" height="40px"/>
-    </h4>
+    </h3>
+        <h4>*שירות ניסיוני, בתקופת הרצה</h4>
          {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
