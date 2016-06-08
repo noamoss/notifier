@@ -53,6 +53,8 @@ sharing_services = {
     'linkedin': "https://www.linkedin.com/shareArticle?mini=true&url={2}&title={0}:{1}&summary=&source=",
     'twitter': "https://twitter.com/intent/tweet?url={2}&text={0}:{1}.via @hasadna",
     'google': "https://plus.google.com/share?url={2}",
+    'click': "{2}",
+
 }
 
 DEBUG = True
