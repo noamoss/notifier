@@ -148,7 +148,7 @@ def add_feed_opentaba():
             city=""
         relevantfeeds = relevant_feeds_urls()
         if url not in relevantfeeds:
-            name = set_title_by_feed(url,city=city)[1].decode('utf8')
+            name = set_title_by_feed(url,city=city)[1]
             a_new_feed = Feed(
                 user_id=session['user_id'],
                 url=request.args.get('link', ''),
