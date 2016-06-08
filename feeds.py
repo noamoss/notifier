@@ -26,7 +26,7 @@ def parse_feeds(feeds):
         feed_data = feedparser.parse(feed.url)
         for entry in feed_data.entries:
             try:
-                published_date = datetime.datetime.fromtimestamp(mktime(entry.updated_parsed)).date()
+                published_date = datetime.datetime.fromtimestamp(mktime(entry.updated_parsed)).date().strftime("%d/%m/%Y")
             except:
                 published_date = u"לא ידוע"
             summary = BeautifulSoup(entry.summary).get_text()
