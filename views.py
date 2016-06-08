@@ -148,12 +148,12 @@ def add_feed_opentaba():
             city=""
         relevantfeeds = relevant_feeds_urls()
         if url not in relevantfeeds:
-            name = set_title_by_feed(url,city=city)[1]
+            name = set_title_by_feed(url,city=city)[1].decode('utf8')
             a_new_feed = Feed(
                 user_id=session['user_id'],
                 url=request.args.get('link', ''),
                 name=name,
-                project=get_project_by_feed_url(url).encode('utf8'),
+                project=get_project_by_feed_url(url),
                 )
             db.session.add(a_new_feed)
             db.session.commit()

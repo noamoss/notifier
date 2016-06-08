@@ -35,9 +35,9 @@ def parse_feeds(feeds):
     return sorted(results, key=operator.itemgetter(4), reverse=True)
 
 
-def set_title_by_feed(url,city=""):
+def set_title_by_feed(url,city=u""):
     # return tuple of porject name and specific title for new feeds
-    project_name = get_project_by_feed_url(url)
+    project_name = get_project_by_feed_url(url).decode('utf-8')
     try:
         title = feedparser.parse(url).feed.title
     except:
@@ -45,7 +45,7 @@ def set_title_by_feed(url,city=""):
     if project_name==u'תב"ע פתוחה':
         title+=" " + str(city)
     print(title)
-    return (project_name,title)
+    return (project_name.encode('utf8'),title.encode('utf8'))
 
 def relevant_feeds(user_id=None):
     if user_id == None:
@@ -64,11 +64,11 @@ def get_project_by_feed_url(url):
     # return project name (and subclass,if relevant, by feed address)
     domain_first_part = url.split(".")[0]
     if "opentaba" in domain_first_part:
-        return u'תב"ע פתוחה'
+        return u'תב"ע פתוחה'.encode('utf8')
     elif domain_first_part == u"kikar":
-        return u'כיכר המדינה'
+        return u'כיכר המדינה'.encode('utf8')
     else:
-        return u"לא ידוע"
+        return u"לא ידוע".encode('utf8')
 
 
 def save_feed_to_db(url, name, project,user_id,relevant_feeds):
