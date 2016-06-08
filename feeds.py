@@ -28,7 +28,7 @@ def parse_feeds(feeds):
             try:
                 published_date = datetime.datetime.fromtimestamp(mktime(entry.updated_parsed)).date()
             except:
-                published_date = "לא ידוע"
+                published_date = u"לא ידוע"
             summary = BeautifulSoup(entry.summary).get_text()
             if datetime.datetime.today().date() - published_date <= datetime.timedelta(relevant_days_for_feed):
                 results.append([feed.name, entry.title, summary, urllib.parse.quote(entry.link),published_date])
@@ -42,7 +42,7 @@ def set_title_by_feed(url,city=""):
         title = feedparser.parse(url).feed.title
     except:
         title=""
-    if project_name=='תב"ע פתוחה':
+    if project_name==u'תב"ע פתוחה':
         title+=" " + str(city)
     print(title)
     return (project_name,title)
@@ -64,11 +64,11 @@ def get_project_by_feed_url(url):
     # return project name (and subclass,if relevant, by feed address)
     domain_first_part = url.split(".")[0]
     if "opentaba" in domain_first_part:
-        return 'תב"ע פתוחה'
-    elif domain_first_part == "kikar":
-        return 'כיכר המדינה'
+        return u'תב"ע פתוחה'
+    elif domain_first_part == u"kikar":
+        return u'כיכר המדינה'
     else:
-        return "לא ידוע"
+        return u"לא ידוע"
 
 
 def save_feed_to_db(url, name, project,user_id,relevant_feeds):
@@ -91,4 +91,3 @@ def save_feed_to_db(url, name, project,user_id,relevant_feeds):
     else:
         flash(u'את/ה כבר עוקבים אחרי מקור מידע זה')
         return redirect(url_for('notifier.feeds_editor'))
-

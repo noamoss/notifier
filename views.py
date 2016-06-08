@@ -50,9 +50,9 @@ def login():
             if user is not None and bcrypt.check_password_hash(user.password, request.form['password']):
                 login_user(user)
             else:
-                error = 'כתובת דוא"ל או סיסמה שגויים'
+                error = u'כתובת דוא"ל או סיסמה שגויים'
         else:
-            error = "שני השדות דרושים להתחברות."
+            error = u"שני השדות דרושים להתחברות."
 
     if 'logged_in' in session:  #if already logged in:
         flash(u'ברוכים השבים, את/ה כבר מחוברת!')
@@ -86,7 +86,7 @@ def register():
                 db.session.commit()
 
             except IntegrityError:
-                error = 'כתובת הדוא"ל הזו כבר קיימת באתר.'
+                error = u'כתובת הדוא"ל הזו כבר קיימת באתר.'
                 return render_template('register.html', form=form, error=error)
 
             token = generate_confirmation_token(new_user.email)
@@ -134,7 +134,7 @@ def add_feed_kikar():
     relevantfeeds = relevant_feeds_urls()
     name = set_title_by_feed(url)[1]
     user_id = session['user_id']
-    save_feed_to_db(url=url, name=name, project="כיכר המדינה", user_id=user_id,relevant_feeds=relevantfeeds)
+    save_feed_to_db(url=url, name=name, project=u"כיכר המדינה", user_id=user_id,relevant_feeds=relevantfeeds)
     return redirect(url_for('notifier.feeds_editor'))
 
 
@@ -153,7 +153,7 @@ def add_feed_opentaba():
                 user_id=session['user_id'],
                 url=request.args.get('link', ''),
                 name=name,
-                project=get_project_by_feed_url(url),
+                project=get_project_by_feed_url(url).encode('utf8'),
                 )
             db.session.add(a_new_feed)
             db.session.commit()
@@ -194,9 +194,9 @@ def trying(projectname=None):
                         return redirect(
                             url_for('notifier.add_feed_' + projectname, **request.args))
                     else:
-                        error = 'כתובת דוא"ל או סיסמה שגויים'
+                        error = u'כתובת דוא"ל או סיסמה שגויים'
                 else:
-                    error = "שני השדות דרושים להתחברות."
+                    error = u"שני השדות דרושים להתחברות."
 
                 return render_template('add_feed_and_register.html',
                                        register_form=register_form,
@@ -215,7 +215,7 @@ def trying(projectname=None):
                         db.session.commit()
 
                     except IntegrityError:
-                        error = 'כתובת הדוא"ל הזו כבר קיימת באתר.'
+                        error = u'כתובת הדוא"ל הזו כבר קיימת באתר.'
                         return render_template('add_feed_and_register.html',
                                    set_tab=1,
                                    register_form=register_form,
