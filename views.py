@@ -146,17 +146,21 @@ def add_feed_opentaba():
     try:
         if url not in relevantfeeds:
             try:
-                city = request.args.get('city','')
+                city = request.args.get('city', '')
             except:
-                city=""
+                city = ""
 
-            name = set_title_by_feed(url)[1]
-            try:
-                name_temp = name.split(" ")
-            except:
-                name_temp = [name,"",""]
-            name_temp[2] = city+", "
-            name= " ".join(name_temp)
+            if "gush" not in url:
+                name = set_title_by_feed(url)[1]
+                try:
+                    name_temp = name.split(" ")
+                except:
+                    name_temp = [name,"",""]
+                    name_temp[2] = city+", "
+                    name= " ".join(name_temp)
+            else:
+                name= 'תב"ע פתוחה '+city
+
             a_new_feed = Feed(
                 user_id=session['user_id'],
                 url=request.args.get('link', ''),
