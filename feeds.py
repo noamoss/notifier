@@ -35,13 +35,16 @@ def parse_feeds(feeds):
     return sorted(results, key=operator.itemgetter(4), reverse=True)
 
 
-def set_title_by_feed(url):
+def set_title_by_feed(url,city=""):
     # return tuple of porject name and specific title for new feeds
     project_name = get_project_by_feed_url(url)
     try:
         title = feedparser.parse(url).feed.title
     except:
-        title=None
+        title=""
+    if project_name=='תב"ע פתוחה':
+        title+=" " + str(city)
+    print(title)
     return (project_name,title)
 
 def relevant_feeds(user_id=None):
@@ -59,7 +62,7 @@ def relevant_feeds_urls():
 
 def get_project_by_feed_url(url):
     # return project name (and subclass,if relevant, by feed address)
-    domain_first_part = urllib.parse.urlparse(url).netloc.split(".")[0]
+    domain_first_part = url.split(".")[0]
     if "opentaba" in domain_first_part:
         return 'תב"ע פתוחה'
     elif domain_first_part == "kikar":

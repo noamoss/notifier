@@ -141,32 +141,20 @@ def add_feed_kikar():
 @notifier.route('/addfeed/opentaba', methods=['GET'])
 @login_required
 def add_feed_opentaba():
-    url = request.args.get('link','')
-    relevantfeeds = relevant_feeds_urls()
     try:
+        url = request.args.get('link','')
+        city = request.args.get('city')
+        if city is None:
+            city=""
+        relevantfeeds = relevant_feeds_urls()
         if url not in relevantfeeds:
-            try:
-                city = request.args.get('city', '')
-            except:
-                city = ""
-
-            if "gush" not in url:
-                name = set_title_by_feed(url)[1]
-                try:
-                    name_temp = name.split(" ")
-                except:
-                    name_temp = [name,"",""]
-                    name_temp[2] = city+", "
-                    name= " ".join(name_temp)
-            else:
-                name= 'תב"ע פתוחה '+city
-
+            name = set_title_by_feed(url,city=city)[1]
             a_new_feed = Feed(
                 user_id=session['user_id'],
                 url=request.args.get('link', ''),
                 name=name,
-                project='תב"ע פתוחה ' + city,
-            )
+                project=get_project_by_feed_url(url),
+                )
             db.session.add(a_new_feed)
             db.session.commit()
             flash(u'ההזנה החדשה נוספה למאגר')
@@ -175,7 +163,6 @@ def add_feed_opentaba():
         else:
             flash(u'את/ה כבר עוקבים אחרי מקור מידע זה')
             return redirect(url_for('notifier.feeds_editor'))
-
     except (ValueError, KeyError, TypeError):
         errormsg = "type: " + str(sys.exc_info()[0]) + ", value: " + str(sys.exc_info()[1]) + ", traceback: " + str(sys.exc_info()[2])
         return render_template('error.html', errormsg=errormsg)
