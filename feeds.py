@@ -43,7 +43,8 @@ def set_title_by_feed(url,city=u""):
     except:
         title=""
     if project_name==u'תב"ע פתוחה':
-        title+=" " + str(city)
+        if city not in title:
+            title+=" " + str(city)
     return (project_name,title)
 
 def relevant_feeds(user_id=None):
