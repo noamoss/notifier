@@ -12,17 +12,20 @@
     <![endif]-->
      <meta charset="UTF-8">
         <script src=" {{url_for('static', filename='jquery-2.2.4.min.js') }}"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
 <body dir="rtl">
-    <div class="container">
-    <h3>
-        <img src="{{ url_for('notifier.static', filename='hasadna-logo.jpg') }}" height="40px"/>
+    <header>
+        <h3>
+            <img src="{{ url_for('notifier.static', filename='hasadna-logo.jpg') }}" height="40px"/>
     לחשושים ועדכונים ממקורות המידע הציבורי הפתוח
-        <img src="{{ url_for('notifier.static', filename='notifier.png') }}" height="40px"/>
-    </h3>
+            <img src="{{ url_for('notifier.static', filename='notifier.png') }}" height="40px"/>
+        </h3>
         <h4>*שירות ניסיוני, בתקופת הרצה</h4>
+    </header>
+
+    <div class="container">
          {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}
@@ -31,10 +34,10 @@
         {% endif %}
 
         <br>
-
-        {% block content %}
-        {% endblock %}
-
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
       <script src=" {{ url_for('static', filename='bootstrap.min.js') }}"></script>
 </body>

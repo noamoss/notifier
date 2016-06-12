@@ -1,12 +1,15 @@
-    <div>
+    <div id="personal_feed">
         <h3> עדכונים אישיים </h3>
+        <br>
+        <p>עדכונים מה-{{days_no}} ימים האחרונים</p>
        {% for entry in parsed_feeds %}
-        <p class="split-line">
+        <div class="feed_item split-line">
             <b>{{ entry[0] }}:</b><i> {{ entry[1] }}</i>.<br>
                 {{ entry[2] }}<br><br>
 
                 <a href="{{ url_for('notifier.share_item', service='click', project=entry[0], title=entry[1], link=entry[3]) }}" target=_blank>קישור לפרסום המקורי</a>, שפורסם ב-{{ entry[4] }}.
                 <span>
+                    שתפו:
                     <a href=" {{ url_for('notifier.share_item', service='facebook', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a>
                     <a href="{{ url_for('notifier.share_item', service='twitter', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                     <a href="{{ url_for('notifier.share_item', service='google', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
@@ -14,7 +17,7 @@
                     <a href="{{ url_for('notifier.share_item', service='email', project=entry[0], title=entry[1], link=entry[3]) }}" target="_blank"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 </span>
 
-            <br><br><br>
-        </p>
+            <br>
+        </div>
     {% endfor %}
     </div>

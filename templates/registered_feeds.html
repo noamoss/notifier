@@ -1,19 +1,20 @@
-        <div>
+        <div class="container">
             <h2>הזנות קיימות:</h2>
-            <div class="datagrid">
+            <br>
+            <div class="datagrid" id="feed_list">
                 <table>
                     <thead>
                         <tr>
-                            <th width="300"><strong>שם ההזנה</strong></th>
-                            <th><strong>כתובת ההזנה</strong></th>
-                            <th>פעולות</th>
+                            <th width="40%"><strong>שם ההזנה</strong></th>
+                            <th width="20%"><strong>קישור למקור ההזנה</strong></th>
+                            <th width="20%">פעולות</th>
                         </tr>
                     </thead>
                 {% for feed in feeds %}
                     <tr>
-                        <td width="300"> {{feed.name }}</td>
-                        <td> <a href="{{ feed.url }}" target="_blank">{{ feed.url }}</a></td>
-                        <td>
+                        <td width="40%"> {{feed.name }}</td>
+                        <td width="40%"> <a href="{{ feed.url }}" target="_blank">קישור</a></td>
+                        <td width="20%">
                          <a href=" {{ url_for('notifier.delete_feed', feed_id = feed.id) }}">מחיקה</a>
                         </td>
                     </tr>

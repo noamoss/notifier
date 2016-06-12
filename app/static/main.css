@@ -1,6 +1,54 @@
+header {
+    width: 100%;
+    padding: 1em;
+    text-align: center;
+}
+
+#personal_feed {
+    width: 100%;
+    }
+
+.flash, .error {
+    width: 100%;
+    padding: 2em;
+    text-align: center;
+    }
+
+#register_form, #login_form {
+    width: 100%;
+    padding: 1em;
+    text-align: center
+
+}
+
+form input{
+    width: 80%;
+    padding: 1em;
+    max_width: 350px;
+}
+
+.btn {
+    min-width: 48px;
+    padding: 1.5em;
+}
+
 th, td {
     text-align: center;
 }
 
-.split-line      { display:block;margin:10px; float:right}
-.split-line span { display:block;float:left;margin-left:10px}
+.split-line      { display:block;float:right}
+.split-line span { display:block;float:left}
+
+#feed_list table{
+    width: 100%;
+    padding: 1.5em;
+    text-align: center;
+}
+
+
+.feed_item {
+    width:90%;
+    max-width: 90%;
+    min-width: 90%;
+    padding: 2em;
+}

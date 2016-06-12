@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% block content %}
+<div id="register_form">
 <h3> הירשמו וצרו לכם רשימה משלכם לעדכונים.</h3>
     <form method = "POST" action="/register">
         {{ form.csrf_token }}
@@ -33,11 +34,11 @@
              </span>
             {% endif %}
         </p>
-
-        <button class="brn brn-sm brn-success" type="submit">Register</button>
-        <br>
+        <br><br>
+        <button class="btn btn-sm btn-success" type="submit">הרשמה</button>
+        <br><br>
         <p><em>כבר רשומים?</em> הקליקו <a href="/">כאן</a> כדי להתחבר.</p>
     </form>
-
+</div>
 
 {% endblock %}

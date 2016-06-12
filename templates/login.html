@@ -1,18 +1,19 @@
 {% extends "_base.html" %}
 {% block content %}
-<h3>אנא התחבר/י כדי לצפות ברשימת מקורות המידע שלך.</h3>
+<div id="login_form">
+    <h3>התחבר/י כדי לצפות ברשימת מקורות המידע שלך.</h3>
 
-<form method ="post" action="/">
-    {{ form.csrf_token }}
-    <p>
-        {{ form.email(placeholder='כתובת דוא"ל') }}
-        <span class="error">
-            {% if form.email.errors %}
-                {% for error in form.email.errors %}
-                    {{ error }}
-                {% endfor %}
-            {% endif %}
-        </span>
+    <form method ="post" action="/">
+        {{ form.csrf_token }}
+        <p>
+            {{ form.email(placeholder='כתובת דוא"ל') }}
+            <span class="error">
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% endif %}
+            </span>
         </p>
         <p>
             {{ form.password(placeholder="סיסמה") }}
@@ -24,11 +25,14 @@
               {% endif %}
             </span>
         </p>
-        <button class="btn btn-sm btn-success" type="submit">התחברות</button>
-</form>
-<br>
-<br>
+    <br>
+    <br>
 
-<p><em> צריכים חשבון ?? </em><a href="/register">הירשמו!!</a></p>
+        <button class="btn btn-sm btn-success" type="submit">התחברות</button>
+    </form>
+    <br>
+    <br>
+
+    <p><em> צריכים חשבון ?? </em><a href="/register">הירשמו!!</a></p>
 
 {% endblock %}
