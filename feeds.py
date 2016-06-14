@@ -35,16 +35,13 @@ def parse_feeds(feeds):
     return sorted(results, key=operator.itemgetter(4), reverse=True)
 
 
-def set_title_by_feed(url,city=u""):
+def set_title_by_feed(url,**kwargs):
     # return tuple of porject name and specific title for new feeds
     project_name = get_project_by_feed_url(url)
     try:
         title = feedparser.parse(url).feed.title
     except:
         title=""
-    if project_name==u'תב"ע פתוחה':
-        if city not in title:
-            title+=" " + str(city)
     return (project_name,title)
 
 def relevant_feeds(user_id=None):
