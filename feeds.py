@@ -27,11 +27,12 @@ def parse_feeds(feeds):
         for entry in feed_data.entries:
             try:
                 published_date = datetime.datetime.fromtimestamp(mktime(entry.updated_parsed)).date()
+
             except:
                 published_date = u"לא ידוע"
             summary = BeautifulSoup(entry.summary).get_text()
-            if datetime.datetime.today().date() - published_date <= datetime.timedelta(relevant_days_for_feed):
-                results.append([feed.name, entry.title, summary, urllib.parse.quote(entry.link),published_date.strftime("%d/%m/%Y")])
+            if datetime.datetime.now().date() - published_date <= datetime.timedelta(relevant_days_for_feed):
+                results.append([feed.name, entry.title, summary, urllib.parse.quote(entry.link),published_date])
     return sorted(results, key=operator.itemgetter(4), reverse=True)
 
 

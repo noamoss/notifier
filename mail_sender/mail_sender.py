@@ -56,7 +56,7 @@ def build_mail(user):
     try:
         last_update_date = datetime.strftime(user.last_update.date(), '%d/%m/%Y')
     except:
-        last_update_date = "01/01/1980"
+        last_update_date = datetime.strptime('01011980',"%d%m%Y").date()
 
     share_link = url_for('notifier.share_item')
     feed_link = url_for('notifier.feeds_editor')
@@ -83,7 +83,7 @@ def main():
             if mail is not None:
                 LOGGER.debug("sending mail to %s" %(user.email, ))
                 client.send(mail)
-                user.last_update = datetime.today()
+                user.last_update = datetime.today().date()
 
 
         db.session.commit()
