@@ -57,14 +57,13 @@ class SharedItem(db.Model):
     project= db.Column(String,nullable=False)
     service_share_counter = db.Column(PickleType)
 
-    def __init__(self, full_url, bitly, shares_count,feed_title,project):
+    def __init__(self, full_url, bitly, shares_count,feed_title,project,service_share_counter=None):
         self.full_url=full_url
         self.bitly = bitly
         self.shares_count = 1
         self.feed_title = feed_title
         self.project = project
-        sharing_services_list = list(sharing_services.keys())
-        self.service_share_counter=dict.fromkeys(sharing_services_list,0)
+        self.service_share_counter=dict.fromkeys(sharing_services,0)
 
     def add_share(self,service):
         self.shares_count+=1
