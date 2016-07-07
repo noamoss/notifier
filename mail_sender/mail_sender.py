@@ -46,13 +46,13 @@ def build_mail(user):
     if not feeds:
         return None
 
-    last_feed = feeds[0][4]
-    """
+    last_feed = datetime.strptime(feeds[0][4], '%d/%m/%Y').date()
+
     if  user.last_feed is not None:
-        feeds = [feed for feed in feeds if feed[4] > user.last_feed.date()]
+        feeds = [feed for feed in feeds if datetime.strptime(feed[4], '%d/%m/%Y').date() > user.last_feed.date()]
     if not feeds:
         return None
-    """
+
     try:
         last_update_date = datetime.strftime(user.last_update.date(), '%d/%m/%Y')
     except:
