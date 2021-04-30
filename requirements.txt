@@ -27,7 +27,7 @@ pycparser==2.14
 python-editor==1.0
 python-http-client==1.2.3
 requests==2.10.0
-rsa==3.4.2
+rsa==4.7
 sendgrid==2.2.1
 simplejson==3.8.2
 six==1.10.0
